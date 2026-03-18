@@ -22,7 +22,7 @@ const CategoryPage = () => {
     const fetchCategoryNews = async () => {
       try {
         setLoading(true);
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '');
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
         
         // Transform categoryName to match backend seed (e.g., 'business' -> 'Business')
         const formattedCategory = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);

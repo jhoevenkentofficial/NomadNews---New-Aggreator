@@ -14,7 +14,7 @@ const HomePage = () => {
     const fetchLatestNews = async () => {
       try {
         setLoading(true);
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '');
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
         const res = await axios.get(`${baseUrl}/api/news/latest?page=${currentPage}&limit=28`);
         setNews(res.data.articles);
         setTotalPages(res.data.pagination.totalPages);
