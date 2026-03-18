@@ -15,16 +15,6 @@ app.use('/api/news', newsRoutes);
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: 'mongodb' }));
 
-// Manual Fetch Trigger (for Vercel Cron)
-app.get('/api/news/fetch', async (req, res) => {
-  try {
-    await fetchAndSaveNews();
-    res.json({ message: 'News fetch triggered successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // Start Server (Only if not on Vercel)
 if (!process.env.VERCEL) {
   const connectDB = require('./data/mongodb');

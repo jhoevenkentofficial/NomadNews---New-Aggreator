@@ -69,4 +69,28 @@ router.get('/search', async (req, res) => {
   }
 });
 
+const { fetchAndSaveNews } = require('../services/newsFetcher');
+
+// ... (existing routes)
+
+// Get trending news
+router.get('/trending', async (req, res) => {
+  try {
+    const articles = await Article.find().sort({ publishedAt: -1 }).limit(10);
+    res.json({ articles });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Manual Fetch Trigger
+router.get('/fetch', async (req, res) => {
+  try {
+    await fetchAndSaveNews();
+    res.json({ message: 'News fetch triggered successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
