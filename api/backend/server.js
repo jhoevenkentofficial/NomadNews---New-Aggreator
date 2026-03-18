@@ -11,7 +11,7 @@ const { fetchAndSaveNews } = require('./services/newsFetcher');
 dotenv.config();
 
 // Connect to MongoDB
-connectDB();
+// Delay DB connection until request
 
 const app = express();
 const server = http.createServer(app);
