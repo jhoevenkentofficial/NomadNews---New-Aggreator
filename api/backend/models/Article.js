@@ -6,13 +6,15 @@ const ArticleSchema = new mongoose.Schema({
   description: String,
   source: String,
   category: String,
+  region: String,
   image: String,
   publishedAt: { type: Date, default: Date.now },
   trending: { type: Boolean, default: false }
 }, { timestamps: true });
 
-ArticleSchema.index({ title: 'text', description: 'text' });
+ArticleSchema.index({ title: 'text', description: 'text', region: 'text' });
 ArticleSchema.index({ category: 1 });
+ArticleSchema.index({ region: 1 });
 ArticleSchema.index({ publishedAt: -1 });
 
 module.exports = mongoose.models.Article || mongoose.model('Article', ArticleSchema);

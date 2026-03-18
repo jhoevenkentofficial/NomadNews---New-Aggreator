@@ -50,12 +50,15 @@ router.get('/category/:category', async (req, res) => {
 router.get('/region/:region', async (req, res) => {
   try {
     const { region } = req.params;
+    // Search by explicit region field OR by keyword in title/desc
     const articles = await Article.find({ 
       $or: [
+        { region: region },
         { description: new RegExp(region, 'i') },
         { title: new RegExp(region, 'i') }
       ]
     }).sort({ publishedAt: -1 }).limit(28);
+    
     res.json({ articles, pagination: { totalPages: 1 } });
   } catch (error) {
     res.status(500).json({ error: error.message });
