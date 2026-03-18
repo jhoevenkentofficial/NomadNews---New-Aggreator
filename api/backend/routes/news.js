@@ -6,7 +6,7 @@ const Article = require('../models/Article');
 router.get('/latest', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 28;
+    const limit = parseInt(req.query.limit) || 40; // Increased limit
     const skip = (page - 1) * limit;
 
     const articles = await Article.find().sort({ publishedAt: -1 }).skip(skip).limit(limit);
@@ -25,22 +25,13 @@ router.get('/latest', async (req, res) => {
   }
 });
 
-// Get trending news
-router.get('/trending', async (req, res) => {
-  try {
-    const articles = await Article.find().sort({ publishedAt: -1 }).limit(10);
-    res.json({ articles });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // Get news by category
 router.get('/category/:category', async (req, res) => {
   try {
     const { category } = req.params;
-    const articles = await Article.find({ category }).sort({ publishedAt: -1 }).limit(28);
-    res.json({ articles });
+    // Case-insensitive match
+    const articles = await Article.find({ category: new RegExp(`^${category}$`, 'i') }).sort({ publishedAt: -1 }).limit(40);
+    res.json({ articles, pagination: { totalPages: 1 } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -50,14 +41,14 @@ router.get('/category/:category', async (req, res) => {
 router.get('/region/:region', async (req, res) => {
   try {
     const { region } = req.params;
-    // Search by explicit region field OR by keyword in title/desc
+    // Case-insensitive match for region field or keywords
     const articles = await Article.find({ 
       $or: [
-        { region: region },
+        { region: new RegExp(`^${region}$`, 'i') },
         { description: new RegExp(region, 'i') },
         { title: new RegExp(region, 'i') }
       ]
-    }).sort({ publishedAt: -1 }).limit(28);
+    }).sort({ publishedAt: -1 }).limit(40);
     
     res.json({ articles, pagination: { totalPages: 1 } });
   } catch (error) {

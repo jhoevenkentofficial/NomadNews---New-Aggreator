@@ -15,7 +15,7 @@ const HomePage = () => {
       try {
         setLoading(true);
         const baseUrl = window.location.origin.includes('localhost') ? 'http://localhost:5000' : '';
-        const res = await axios.get(`${baseUrl}/api/news/latest?page=${currentPage}&limit=28`);
+        const res = await axios.get(`${baseUrl}/api/news/latest?page=${currentPage}&limit=40`);
         setNews(res.data.articles);
         setTotalPages(res.data.pagination.totalPages);
       } catch (error) {

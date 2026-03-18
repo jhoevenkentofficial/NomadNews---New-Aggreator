@@ -24,10 +24,7 @@ const CategoryPage = () => {
         setLoading(true);
         const baseUrl = window.location.origin.includes('localhost') ? 'http://localhost:5000' : '';
         
-        // Transform categoryName to match backend seed (e.g., 'business' -> 'Business')
-        const formattedCategory = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
-        
-        const res = await axios.get(`${baseUrl}/api/news/category/${encodeURIComponent(formattedCategory)}?page=${currentPage}&limit=28`);
+        const res = await axios.get(`${baseUrl}/api/news/category/${encodeURIComponent(categoryName)}?page=${currentPage}&limit=28`);
         setArticles(res.data.articles);
         setTotalPages(res.data.pagination.totalPages);
       } catch (err) {
