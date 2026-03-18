@@ -1,2 +1,3 @@
-const app = require('../backend/server');
-module.exports = app;
+module.exports = (req, res) => {
+  res.status(200).json({ message: "Vercel API is working!" });
+};
