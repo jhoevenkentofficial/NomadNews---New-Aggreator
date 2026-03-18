@@ -1,0 +1,98 @@
+[
+  {
+    "title": "Japan's Maglev Train Project Hits 500km/h: Tokyo to Osaka in 67 Minutes",
+    "description": "L0 Series testing enters final phase as JR Central targets 2027 full operation.",
+    "content": "Japan is once again redefining high-speed rail with its Maglev project, promising to cut travel time between its two largest cities in half by 2027.",
+    "url": "https://example.nz/japan-maglev-2026",
+    "image": "https://images.unsplash.com/photo-1542051841857-5f90071e7989?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T05:00:00Z",
+    "source": { "name": "Japan Times", "url": "https://japantimes.co.jp" },
+    "region": "East Asia",
+    "category": "Business",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Seoul's Han River Island: A New 'Forest of the Future'",
+    "description": "Yeouido transformed into a carbon-capturing urban jungle with immersive eco-trails.",
+    "content": "Seoul has officially opened its Yeouido Forest Park, a massive urban reforestation project that uses AI-driven monitoring to maintain its biodiversity.",
+    "url": "https://example.nz/seoul-han-river-2026",
+    "image": "https://images.unsplash.com/photo-1546877625-cb8c71916608?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T06:00:00Z",
+    "source": { "name": "Korea Herald", "url": "https://koreaherald.com" },
+    "region": "East Asia",
+    "category": "Lifestyle",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "India's Varanasi: Ganga River Cruise Expansion for 2026",
+    "description": "New luxury electric boats will provide eco-friendly access to the spiritual capital's Ghats.",
+    "content": "Varanasi is modernizing its ancient spiritual experiences with zero-emission electric cruises that allow for a quiet and respectful look at the Ganges.",
+    "url": "https://example.nz/varanasi-electric-cruises",
+    "image": "https://images.unsplash.com/photo-1510522134121-2c525501ce3d?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T07:00:00Z",
+    "source": { "name": "India Today", "url": "https://indiatoday.in" },
+    "region": "South Asia",
+    "category": "Travel",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Maldives Underwater Restaurant Submerged: A New Deep-Level Fine Dining",
+    "description": "The 'Laccadive Abyss' opens at 30 meters below sea level with panoramic viewing.",
+    "content": "The Maldives is pushing the boundaries of luxury dining once again with a new restaurant that sits deep below the Indian Ocean's surface.",
+    "url": "https://example.nz/maldives-deep-dining",
+    "image": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T08:00:00Z",
+    "source": { "name": "Luxury Traveler", "url": "https://luxurytraveler.com" },
+    "region": "South Asia",
+    "category": "Lifestyle",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Thailand's Koh Samui: New 'Eco-Archipelago' Status",
+    "description": "Significant new environmental protections for Surat Thani islands ahead of Summer 2026.",
+    "content": "Koh Samui and its surrounding islands have been granted special eco-sanctuary status, ensuring that tourism growth balance with coral preservation.",
+    "url": "https://example.nz/samui-eco-status",
+    "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T09:00:00Z",
+    "source": { "name": "Bangkok Post", "url": "https://bangkokpost.com" },
+    "region": "Southeast Asia",
+    "category": "Thailand",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Bali Digital Nomad Tax Incentives Announced for 2026",
+    "description": "Indonesia officially launches the 'Emerald Haven' visa for long-term remote workers.",
+    "content": "Bali remains the world's premier nomad destination as the Indonesian government announces new tax breaks for high-earning remote workers.",
+    "url": "https://example.nz/bali-nomad-visa-2026",
+    "image": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T10:00:00Z",
+    "source": { "name": "Bali Sun", "url": "https://thebalisun.com" },
+    "region": "Southeast Asia",
+    "category": "Business",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Sydney Opera House: A New 3D projection show 'Waves' Debuts",
+    "description": "State-of-the-art laser technology transforms the sails into an ocean of light.",
+    "content": "Sydney has unveiled its most complex projection mapping show yet, using the Opera House sails as a canvas for an ocean-themed light display.",
+    "url": "https://example.nz/sydney-opera-waves",
+    "image": "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T11:00:00Z",
+    "source": { "name": "Sydney Morning Herald", "url": "https://smh.com.au" },
+    "region": "Oceania",
+    "category": "Video",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "New Zealand's Fiordland: First Carbon-Neutral Milford Sound Cruise",
+    "description": "Full electrification of the tourism fleet completed in the heart of the Southern Alps.",
+    "content": "New Zealand is leading the way in sustainable fjord tours with its first fully electric cruise ship now operating in Milford Sound.",
+    "url": "https://example.nz/milford-sound-electric",
+    "image": "https://images.unsplash.com/photo-1541447271487-09612b3f3d7a?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T12:00:00Z",
+    "source": { "name": "NZ Herald", "url": "https://nzherald.co.nz" },
+    "region": "Oceania",
+    "category": "Travel",
+    "createdAt": "2026-03-18T21:00:00Z"
+  }
+]

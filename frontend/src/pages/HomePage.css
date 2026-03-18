@@ -1,0 +1,49 @@
+.homepage-news {
+  width: 100%;
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.no-news {
+  padding: 4rem;
+  text-align: center;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.error-state {
+  max-width: 500px;
+  margin: 4rem auto;
+  padding: 3rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  background: #fff;
+}
+
+.error-state h2 {
+  font-family: 'Roboto', sans-serif;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.error-state p {
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.btn-retry {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
