@@ -1,6 +1,6 @@
 const axios = require('axios');
 const Parser = require('rss-parser');
-const db = require('../data/database');
+const Article = require('../models/Article');
 
 const rssParser = new Parser();
 
@@ -89,13 +89,10 @@ async function fetchAndSaveRSS(io) {
       const feed = await rssParser.parseURL(feedUrl);
       
         for (const item of feed.items) {
-          const slug = item.title.toLowerCase().replace(/[^a-z0-9]/g, '');
-          
-          const exists = await db.findOne({ 
+          const exists = await Article.findOne({ 
             $or: [
               { url: item.link },
-              { title: { $regex: new RegExp(`^${item.title.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } },
-              { description: { $regex: new RegExp(`^${(item.contentSnippet || '').trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }
+              { title: { $regex: new RegExp(`^${item.title.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }
             ]
           });
 
@@ -104,7 +101,7 @@ async function fetchAndSaveRSS(io) {
             const category = determineCategory(item.title, item.contentSnippet || '');
             const region = determineRegion(item.title, item.contentSnippet || '');
             
-            const newArticle = {
+            const newArticle = new Article({
               title: item.title,
               description: item.contentSnippet || '',
               content: item.content || item.contentSnippet || '',
@@ -116,10 +113,9 @@ async function fetchAndSaveRSS(io) {
               category,
               trending: Math.random() > 0.9,
               trendingScore: Math.floor(Math.random() * 100),
-              createdAt: new Date().toISOString()
-            };
+            });
             
-            const saved = await db.insert(newArticle);
+            const saved = await newArticle.save();
             rssSaved++;
             if (io) io.emit('new-article', saved);
           }
@@ -152,18 +148,17 @@ async function fetchAndSaveNews(io) {
           const articles = response.data.articles || [];
           
           for (const articleData of articles) {
-            const exists = await db.findOne({ 
+            const exists = await Article.findOne({ 
               $or: [
                 { url: articleData.url },
-                { title: { $regex: new RegExp(`^${articleData.title.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } },
-                { description: { $regex: new RegExp(`^${(articleData.description || '').trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }
+                { title: { $regex: new RegExp(`^${articleData.title.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }
               ]
             });
             
             if (!exists) {
               const category = determineCategory(articleData.title, articleData.description);
               const region = determineRegion(articleData.title, articleData.description);
-              const newArticle = {
+              const newArticle = new Article({
                 title: articleData.title,
                 description: articleData.description,
                 content: articleData.content,
@@ -175,9 +170,8 @@ async function fetchAndSaveNews(io) {
                 category,
                 trending: Math.random() > 0.9,
                 trendingScore: Math.floor(Math.random() * 100),
-                createdAt: new Date().toISOString()
-              };
-              await db.insert(newArticle);
+              });
+              await newArticle.save();
             }
           }
           await new Promise(resolve => setTimeout(resolve, 2000));

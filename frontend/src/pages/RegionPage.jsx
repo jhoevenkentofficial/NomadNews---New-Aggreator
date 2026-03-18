@@ -22,7 +22,7 @@ const RegionPage = () => {
     const fetchRegionNews = async () => {
       try {
         setLoading(true);
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '');
         const decodedRegion = decodeURIComponent(regionName);
         const res = await axios.get(`${baseUrl}/api/news/region/${encodeURIComponent(decodedRegion)}?page=${currentPage}&limit=28`);
         setArticles(res.data.articles);

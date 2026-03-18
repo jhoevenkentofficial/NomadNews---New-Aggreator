@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../data/database');
+const Article = require('../models/Article');
 
 /**
  * GET latest news articles with pagination
@@ -11,8 +11,8 @@ router.get('/latest', async (req, res) => {
     const limit = parseInt(req.query.limit) || 28;
     const skip = (page - 1) * limit;
 
-    const totalArticles = await db.count({});
-    const articles = await db.find({})
+    const totalArticles = await Article.countDocuments({});
+    const articles = await Article.find({})
       .sort({ publishedAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -36,7 +36,7 @@ router.get('/latest', async (req, res) => {
  */
 router.get('/trending', async (req, res) => {
   try {
-    const articles = await db.find({ trending: true })
+    const articles = await Article.find({ trending: true })
       .sort({ trendingScore: -1 })
       .limit(20);
     res.json({ articles });
@@ -55,8 +55,8 @@ router.get('/category/:categoryName', async (req, res) => {
     const limit = parseInt(req.query.limit) || 28;
     const skip = (page - 1) * limit;
 
-    const totalArticles = await db.count({ category });
-    const articles = await db.find({ category })
+    const totalArticles = await Article.countDocuments({ category });
+    const articles = await Article.find({ category })
       .sort({ publishedAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -85,8 +85,8 @@ router.get('/region/:regionName', async (req, res) => {
     const limit = parseInt(req.query.limit) || 28;
     const skip = (page - 1) * limit;
 
-    const totalArticles = await db.count({ region });
-    const articles = await db.find({ region })
+    const totalArticles = await Article.countDocuments({ region });
+    const articles = await Article.find({ region })
       .sort({ publishedAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -127,8 +127,8 @@ router.get('/search', async (req, res) => {
       ]
     };
 
-    const totalArticles = await db.count(filter);
-    const articles = await db.find(filter)
+    const totalArticles = await Article.countDocuments(filter);
+    const articles = await Article.find(filter)
       .sort({ publishedAt: -1 })
       .skip(skip)
       .limit(limit);

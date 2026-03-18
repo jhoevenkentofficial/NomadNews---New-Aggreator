@@ -5,8 +5,13 @@ const http = require('http');
 const { Server } = require('socket.io');
 const newsRoutes = require('./routes/news');
 const { startCronJob } = require('./cron/fetchScheduler');
+const connectDB = require('./data/mongodb');
+const { fetchAndSaveNews } = require('./services/newsFetcher');
 
 dotenv.config();
+
+// Connect to MongoDB
+connectDB();
 
 const app = express();
 const server = http.createServer(app);
@@ -27,9 +32,19 @@ app.use(express.json());
 app.use('/api/news', newsRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => res.json({ status: 'ok', db: 'local' }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', db: 'mongodb' }));
 
-// Socket.io Connection
+// Manual Fetch Trigger (for Vercel Cron)
+app.get('/api/news/fetch', async (req, res) => {
+  try {
+    await fetchAndSaveNews(io);
+    res.json({ message: 'News fetch triggered successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Socket.io Connection (Note: Might not persist on Vercel)
 io.on('connection', (socket) => {
   console.log('A user connected');
   socket.on('disconnect', () => {
@@ -37,10 +52,17 @@ io.on('connection', (socket) => {
   });
 });
 
-// PASS io to cron and start server (No connection string needed!)
-startCronJob(io);
+// Start Cron (Local only)
+if (!process.env.VERCEL) {
+  startCronJob(io);
+}
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log('Local database (NeDB) initialized.');
-});
+// Start Server (Only if not handled by Vercel)
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

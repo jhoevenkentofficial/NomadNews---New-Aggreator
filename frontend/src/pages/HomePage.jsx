@@ -14,7 +14,7 @@ const HomePage = () => {
     const fetchLatestNews = async () => {
       try {
         setLoading(true);
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '');
         const res = await axios.get(`${baseUrl}/api/news/latest?page=${currentPage}&limit=28`);
         setNews(res.data.articles);
         setTotalPages(res.data.pagination.totalPages);
@@ -29,6 +29,9 @@ const HomePage = () => {
     fetchLatestNews();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage]);
+
+  const heroArticle = news.length > 0 ? news[0] : null;
+  const listArticles = news.length > 1 ? news.slice(1) : [];
 
   if (loading) {
     return (
