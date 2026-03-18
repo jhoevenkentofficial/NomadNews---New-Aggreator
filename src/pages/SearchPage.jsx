@@ -23,7 +23,7 @@ const SearchPage = () => {
       if (!query.trim()) return;
       try {
         setLoading(true);
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+        const baseUrl = window.location.origin.includes('localhost') ? 'http://localhost:5000' : '';
         const res = await axios.get(`${baseUrl}/api/news/search?q=${encodeURIComponent(query)}&page=${currentPage}&limit=28`);
         setArticles(res.data.articles || []);
         setTotalPages(res.data.pagination?.totalPages || 1);

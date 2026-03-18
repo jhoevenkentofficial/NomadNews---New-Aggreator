@@ -17,7 +17,7 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchTrending = async () => {
       try {
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+        const baseUrl = window.location.origin.includes('localhost') ? 'http://localhost:5000' : '';
         const res = await axios.get(`${baseUrl}/api/news/trending`);
         setTrending(res.data.articles || []);
       } catch (err) {
