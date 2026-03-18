@@ -2,23 +2,17 @@ const mongoose = require('mongoose');
 
 const ArticleSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  description: { type: String },
-  content: { type: String },
   url: { type: String, required: true, unique: true },
-  image: { type: String },
+  description: String,
+  source: String,
+  category: String,
+  image: String,
   publishedAt: { type: Date, default: Date.now },
-  source: {
-    name: { type: String },
-    url: { type: String }
-  },
-  region: { type: String, default: 'Global' },
-  category: { type: String, default: 'Travel' },
-  trending: { type: Boolean, default: false },
-  trendingScore: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now }
-});
+  trending: { type: Boolean, default: false }
+}, { timestamps: true });
 
-// Indexing for faster searches
-ArticleSchema.index({ title: 'text', description: 'text', category: 'text', region: 'text' });
+ArticleSchema.index({ title: 'text', description: 'text' });
+ArticleSchema.index({ category: 1 });
+ArticleSchema.index({ publishedAt: -1 });
 
-module.exports = mongoose.model('Article', ArticleSchema);
+module.exports = mongoose.models.Article || mongoose.model('Article', ArticleSchema);

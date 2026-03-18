@@ -1,19 +1,13 @@
 const cron = require('node-cron');
 const { fetchAndSaveNews } = require('../services/newsFetcher');
 
-function startCronJob(io) {
-  console.log('Initializing News Fetcher Cron Job with Real-Time Updates...');
-  
-  // Run once on startup
-  fetchAndSaveNews(io);
-  
-  // Schedule to run every hour
-  cron.schedule('0 * * * *', () => {
-    console.log('Running periodic news fetch job...');
-    fetchAndSaveNews(io);
+const startCronJob = (io = null) => {
+  // Run news fetch every hour locally
+  cron.schedule('0 * * * *', async () => {
+    console.log('[Cron] Running scheduled news fetch...');
+    await fetchAndSaveNews(io);
   });
-}
-
-module.exports = {
-  startCronJob
+  console.log('[Cron] News fetcher scheduled.');
 };
+
+module.exports = { startCronJob };
