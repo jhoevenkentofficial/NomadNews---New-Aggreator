@@ -76,7 +76,10 @@ const { fetchAndSaveNews } = require('../services/newsFetcher');
 // Get trending news
 router.get('/trending', async (req, res) => {
   try {
-    const articles = await Article.find().sort({ publishedAt: -1 }).limit(10);
+    let articles = await Article.find({ trending: true }).sort({ publishedAt: -1 }).limit(10);
+    if (articles.length === 0) {
+      articles = await Article.find().sort({ publishedAt: -1 }).limit(10);
+    }
     res.json({ articles });
   } catch (error) {
     res.status(500).json({ error: error.message });

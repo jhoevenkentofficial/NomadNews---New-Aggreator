@@ -69,7 +69,8 @@ const fetchAndSaveNews = async () => {
             category: feed.category.toLowerCase(),
             region: feed.region !== 'Global' ? feed.region : detectedRegion,
             image: item.enclosure?.url || `https://picsum.photos/seed/${encodeURIComponent(title)}/800/400`,
-            publishedAt: new Date(item.pubDate || Date.now())
+            publishedAt: new Date(item.pubDate || Date.now()),
+            trending: Math.random() > 0.8 // Randomly mark 20% as trending
           };
 
           if (!article.url || !article.title) continue;
@@ -101,7 +102,8 @@ const fetchAndSaveNews = async () => {
               category: q.toLowerCase(),
               region: detectedRegion,
               image: item.image || `https://picsum.photos/seed/${encodeURIComponent(item.title)}/800/400`,
-              publishedAt: new Date(item.publishedAt)
+              publishedAt: new Date(item.publishedAt),
+              trending: Math.random() > 0.5 // GNews results are 50% trending
             };
 
             await Article.findOneAndUpdate(
