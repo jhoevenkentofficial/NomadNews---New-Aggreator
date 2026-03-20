@@ -1,10 +1,10 @@
 const app = require('./backend/server');
-const connectDB = require('./backend/data/mongodb');
+const { initDB } = require('./backend/data/postgres');
 
 module.exports = async (req, res) => {
   try {
     // Ensure DB connection is established
-    await connectDB();
+    await initDB();
     
     // Pass the request to the Express app
     return app(req, res);

@@ -17,9 +17,9 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok', db: 'mongodb' }));
 
 // Start Server (Only if not on Vercel)
 if (!process.env.VERCEL) {
-  const connectDB = require('./data/mongodb');
+  const { initDB } = require('./data/postgres');
   const { startCronJob } = require('./cron/fetchScheduler');
-  connectDB();
+  initDB();
   startCronJob();
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {

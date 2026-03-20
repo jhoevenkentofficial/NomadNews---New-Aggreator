@@ -1,6 +1,6 @@
 const axios = require('axios');
 const Parser = require('rss-parser');
-const Article = require('../models/Article');
+const { pool } = require('../data/postgres');
 const parser = new Parser();
 
 const fetchAndSaveNews = async () => {
@@ -88,10 +88,23 @@ const fetchAndSaveNews = async () => {
       return 'Global';
     };
 
+    const upsertArticle = async (article) => {
+      await pool.query(`
+        INSERT INTO articles (title, url, description, source, category, region, image, published_at, trending)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        ON CONFLICT (url) DO UPDATE SET
+          title = EXCLUDED.title,
+          description = EXCLUDED.description,
+          region = EXCLUDED.region,
+          image = EXCLUDED.image,
+          trending = EXCLUDED.trending,
+          published_at = EXCLUDED.published_at;
+      `, [article.title, article.url, article.description, article.source, article.category, article.region, article.image, article.publishedAt, article.trending]);
+    };
+
     const fetchPromises = feeds.map(async (feed) => {
       try {
         const feedData = await parser.parseURL(feed.url);
-        const articleOps = [];
 
         for (const item of feedData.items) {
           const title = item.title || '';
@@ -111,18 +124,8 @@ const fetchAndSaveNews = async () => {
           };
 
           if (!article.url || !article.title) continue;
-
-          articleOps.push({
-            updateOne: {
-              filter: { url: article.url },
-              update: { $set: article },
-              upsert: true
-            }
-          });
-        }
-        
-        if (articleOps.length > 0) {
-          await Article.bulkWrite(articleOps, { ordered: false });
+          
+          await upsertArticle(article);
         }
       } catch (e) {
         console.error(`Feed Error (${feed.url}):`, e.message);
@@ -148,14 +151,10 @@ const fetchAndSaveNews = async () => {
               region: detectedRegion,
               image: item.image || `https://picsum.photos/seed/${encodeURIComponent(item.title)}/800/400`,
               publishedAt: new Date(item.publishedAt),
-              trending: Math.random() > 0.5 // GNews results are 50% trending
+              trending: Math.random() > 0.5
             };
 
-            await Article.findOneAndUpdate(
-              { url: article.url },
-              article,
-              { upsert: true, new: true }
-            );
+            await upsertArticle(article);
           }
         } catch (e) {
           console.error(`GNews Error (${q}):`, e.message);
