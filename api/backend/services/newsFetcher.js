@@ -88,9 +88,11 @@ const fetchAndSaveNews = async () => {
       return 'Global';
     };
 
-    for (const feed of feeds) {
+    const fetchPromises = feeds.map(async (feed) => {
       try {
         const feedData = await parser.parseURL(feed.url);
+        const articleOps = [];
+
         for (const item of feedData.items) {
           const title = item.title || '';
           const description = item.contentSnippet || item.content || '';
@@ -105,21 +107,29 @@ const fetchAndSaveNews = async () => {
             region: feed.region !== 'Global' ? feed.region : detectedRegion,
             image: item.enclosure?.url || `https://picsum.photos/seed/${encodeURIComponent(title)}/800/400`,
             publishedAt: new Date(item.pubDate || Date.now()),
-            trending: Math.random() > 0.8 // Randomly mark 20% as trending
+            trending: Math.random() > 0.8
           };
 
           if (!article.url || !article.title) continue;
 
-          await Article.findOneAndUpdate(
-            { url: article.url },
-            article,
-            { upsert: true, new: true }
-          );
+          articleOps.push({
+            updateOne: {
+              filter: { url: article.url },
+              update: { $set: article },
+              upsert: true
+            }
+          });
+        }
+        
+        if (articleOps.length > 0) {
+          await Article.bulkWrite(articleOps, { ordered: false });
         }
       } catch (e) {
         console.error(`Feed Error (${feed.url}):`, e.message);
       }
-    }
+    });
+
+    await Promise.allSettled(fetchPromises);
 
     // GNews API
     if (process.env.NEWS_API_KEY) {
