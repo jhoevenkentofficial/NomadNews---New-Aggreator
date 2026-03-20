@@ -6,12 +6,47 @@ const parser = new Parser();
 const fetchAndSaveNews = async () => {
   try {
     const feeds = [
-      // Thailand
-      { url: 'https://www.bangkokpost.com/rss/data/topstories.xml', category: 'Thailand', region: 'Southeast Asia' },
-      
-      // World
-      { url: 'https://feeds.bbci.co.uk/news/world/rss.xml', category: 'World', region: 'Global' },
-      { url: 'https://www.aljazeera.com/xml/rss/all.xml', category: 'World', region: 'Global' },
+      // North America
+      { url: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml', category: 'world', region: 'North America' },
+      { url: 'http://rss.cnn.com/rss/edition.rss', category: 'world', region: 'North America' },
+      { url: 'https://moxie.foxnews.com/google-publisher/latest.xml', category: 'world', region: 'North America' },
+      { url: 'https://www.cbc.ca/cmlink/rss-topstories', category: 'world', region: 'North America' },
+
+      // Western Europe
+      { url: 'http://feeds.bbci.co.uk/news/world/europe/rss.xml', category: 'world', region: 'Western Europe' },
+      { url: 'https://www.france24.com/en/europe/rss', category: 'world', region: 'Western Europe' },
+      { url: 'https://rss.dw.com/rdf/rss-en-eu', category: 'world', region: 'Western Europe' },
+      { url: 'https://www.theguardian.com/europe/rss', category: 'world', region: 'Western Europe' },
+
+      // East Asia
+      { url: 'https://www.scmp.com/rss/91/feed', category: 'world', region: 'East Asia' },
+      { url: 'https://www.japantimes.co.jp/feed/', category: 'world', region: 'East Asia' },
+      { url: 'http://www.koreaherald.com/common/rss_xml.php?ct=102', category: 'world', region: 'East Asia' },
+
+      // Southeast Asia
+      { url: 'https://www.bangkokpost.com/rss/data/topstories.xml', category: 'world', region: 'Southeast Asia' },
+      { url: 'https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml', category: 'world', region: 'Southeast Asia' },
+      { url: 'https://www.thestar.com.my/rss/news', category: 'world', region: 'Southeast Asia' },
+
+      // South Asia
+      { url: 'https://timesofindia.indiatimes.com/rssfeedstopstories.cms', category: 'world', region: 'South Asia' },
+      { url: 'https://www.thehindu.com/news/feeder/default.rss', category: 'world', region: 'South Asia' },
+      { url: 'https://www.dawn.com/feeds/home/', category: 'world', region: 'South Asia' },
+
+      // Africa
+      { url: 'https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf', category: 'world', region: 'Africa' },
+      { url: 'https://feeds.news24.com/articles/news24/TopStories/rss', category: 'world', region: 'Africa' },
+      { url: 'https://nation.africa/kenya/rss', category: 'world', region: 'Africa' },
+
+      // Middle East
+      { url: 'https://www.aljazeera.com/xml/rss/all.xml', category: 'world', region: 'Middle East' },
+      { url: 'https://gulfnews.com/arc/outboundfeeds/rss/gen/gulfnews/1.1555?outputType=xml', category: 'world', region: 'Middle East' },
+      { url: 'https://www.middleeasteye.net/rss', category: 'world', region: 'Middle East' },
+
+      // Oceania
+      { url: 'https://www.abc.net.au/news/feed/51120/rss.xml', category: 'world', region: 'Oceania' },
+      { url: 'https://www.smh.com.au/rss/feed.xml', category: 'world', region: 'Oceania' },
+      { url: 'https://www.rnz.co.nz/rss/news.xml', category: 'world', region: 'Oceania' },
       
       // Business
       { url: 'https://skift.com/feed/', category: 'Business', region: 'Global' },
@@ -28,7 +63,7 @@ const fetchAndSaveNews = async () => {
       // Flights & Aviation
       { url: 'https://simpleflying.com/feed/', category: 'flights', region: 'Global' },
       
-      // Video (The Guardian Video RSS)
+      // Video
       { url: 'https://www.theguardian.com/world/video/rss', category: 'video', region: 'Global' }
     ];
 
