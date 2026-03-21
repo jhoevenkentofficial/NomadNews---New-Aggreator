@@ -202,8 +202,13 @@ router.get('/source/:source', async (req, res) => {
 // Manual Fetch Trigger
 router.get('/fetch', async (req, res) => {
   try {
-    fetchAndSaveNews().catch(err => console.error('Background fetch error:', err));
-    res.json({ message: 'News fetch triggered successfully' });
+    console.log('Starting manual fetch...');
+    await fetchAndSaveNews();
+    const countResult = await pool.query('SELECT COUNT(*) FROM articles');
+    res.json({ 
+      message: 'News fetch completed successfully', 
+      totalArticles: parseInt(countResult.rows[0].count, 10) 
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
