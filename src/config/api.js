@@ -1,11 +1,15 @@
 const getBaseUrl = () => {
-  // If we are in production (on the web), we use the production API URL
-  // If we are in development (localhost), we use the local API URL
+  // If we have a VITE_API_URL set in environment variables (Netlify/Vercel)
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL + '/api/news';
+  }
+
+  // Fallback for local development
   if (window.location.origin.includes('localhost')) {
     return 'http://localhost:5000/api/news';
   }
   
-  // Replace this with your actual production domain (e.g., https://api.yourdomain.com)
+  // Default to relative path for traditional hosting (GoDaddy)
   return window.location.origin + '/api/news';
 };
 

@@ -84,6 +84,11 @@ const fetchAndSaveNews = async () => {
       { url: 'https://www.rnz.co.nz/rss/news.xml', category: 'world', region: 'Oceania' },
       { url: 'https://www.nzherald.co.nz/rss', category: 'world', region: 'Oceania' },
       
+      // Thailand Specific (Requested by user)
+      { url: 'https://www.bangkokpost.com/rss/data/topstories.xml', category: 'thailand', region: 'Southeast Asia' },
+      { url: 'https://www.thaiexaminer.com/feed/', category: 'thailand', region: 'Southeast Asia' },
+      { url: 'https://thethaiger.com/feed', category: 'thailand', region: 'Southeast Asia' },
+      
       // Business
       { url: 'https://skift.com/feed/', category: 'Business', region: 'Global' },
       { url: 'https://www.economist.com/business/rss.xml', category: 'Business', region: 'Global' },
@@ -96,7 +101,12 @@ const fetchAndSaveNews = async () => {
       { url: 'https://www.theguardian.com/commentisfree/rss', category: 'Opinion', region: 'Global' },
       
       // Flights & Aviation
-      { url: 'https://simpleflying.com/feed/', category: 'flights', region: 'Global' }
+      { url: 'https://simpleflying.com/feed/', category: 'flights', region: 'Global' },
+
+      // Video (Requested by user)
+      { url: 'http://feeds.bbci.co.uk/news/video_and_audio/news_front_page/rss.xml', category: 'video', region: 'Global' },
+      { url: 'http://feeds.bbci.co.uk/news/video_and_audio/world/rss.xml', category: 'video', region: 'Global' },
+      { url: 'https://www.france24.com/en/rss', category: 'video', region: 'Global' }
     ];
 
     const regionKeywords = {
