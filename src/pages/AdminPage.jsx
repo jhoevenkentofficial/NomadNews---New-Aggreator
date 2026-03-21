@@ -10,7 +10,7 @@ const AdminPage = () => {
     description: '',
     category: 'Announcements',
     image: '',
-    secret: ''
+    secret: 'ttn_admin_2026'
   });
   const [status, setStatus] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
