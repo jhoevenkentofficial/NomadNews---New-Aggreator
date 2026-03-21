@@ -9,8 +9,8 @@ const getBaseUrl = () => {
     return 'http://localhost:5000/api/news';
   }
   
-  // Default to relative path for traditional hosting (GoDaddy)
-  return window.location.origin + '/api/news';
+  // Default to relative path for unified hosting (Vercel)
+  return '/api/news';
 };
 
 export const API_URL = getBaseUrl();
