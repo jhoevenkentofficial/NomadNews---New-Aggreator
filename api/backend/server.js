@@ -15,18 +15,25 @@ const { initDB } = require('./data/postgres');
 initDB();
 
 // Routes
-app.use('/api/news', newsRoutes);
+app.use(['/api/news', '/news'], newsRoutes);
 
 // Health check (Handle both /api/health and /health)
 app.get(['/api/health', '/health'], (req, res) => res.json({ status: 'ok', db: 'postgres' }));
 
 // Debug check (Handle both /api/debug and /debug)
-app.get(['/api/debug', '/debug'], (req, res) => {
+app.get(['/api/debug', '/debug'], async (req, res) => {
+  let count = 0;
+  try {
+    const r = await require('./data/postgres').pool.query('SELECT count(*) FROM articles');
+    count = r.rows[0].count;
+  } catch (e) {}
+  
   res.json({
     db_env: !!process.env.DATABASE_URL,
     news_env: !!process.env.NEWS_API_KEY,
-    preview: process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 20) + '...' : 'MISSING',
-    received_url: req.url
+    article_count: count,
+    received_url: req.url,
+    node_env: process.env.NODE_ENV
   });
 });
 
