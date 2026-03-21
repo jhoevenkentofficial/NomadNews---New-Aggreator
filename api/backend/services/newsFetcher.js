@@ -136,23 +136,45 @@ const fetchAndSaveNews = async () => {
       return 'Global';
     };
 
-    const upsertArticle = async (article) => {
-      await pool.query(`
-        INSERT INTO articles (title, url, description, source, category, region, image, published_at, trending)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        ON CONFLICT (url) DO UPDATE SET
-          title = EXCLUDED.title,
-          description = EXCLUDED.description,
-          region = EXCLUDED.region,
-          image = EXCLUDED.image,
-          trending = EXCLUDED.trending,
-          published_at = EXCLUDED.published_at;
-      `, [article.title, article.url, article.description, article.source, article.category, article.region, article.image, article.publishedAt, article.trending]);
+    const saveArticles = async (articles) => {
+        let savedCount = 0;
+        for (const article of articles) {
+            try {
+                // Check for duplicates
+                const existing = await client.execute({
+                    sql: 'SELECT id FROM articles WHERE url = ?',
+                    args: [article.url]
+                });
+
+                if (existing.rows.length === 0) {
+                    await client.execute({
+                        sql: `INSERT INTO articles (title, url, description, source, category, region, image, published_at, trending)
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                        args: [
+                            article.title, 
+                            article.url, 
+                            article.description, 
+                            article.source, 
+                            article.category, 
+                            article.region, 
+                            article.image, 
+                            article.publishedAt, 
+                            article.trending ? 1 : 0
+                        ]
+                    });
+                    savedCount++;
+                }
+            } catch (error) {
+                console.error('Error saving article to Turso:', error);
+            }
+        }
+        return savedCount;
     };
 
     const fetchPromises = feeds.map(async (feed) => {
       try {
         const feedData = await parser.parseURL(feed.url);
+        const articlesToSave = [];
 
         for (const item of feedData.items) {
           const title = item.title || '';

@@ -9,16 +9,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const { initDB } = require('./data/postgres');
+const { initDB } = require('./data/turso');
 
-// Initialize DB connection (Async)
-initDB();
+// Initialize database
+initDB().catch(console.error);
 
 // Routes
 app.use(['/api/news', '/news'], newsRoutes);
 
 // Health check (Handle both /api/health and /health)
-app.get(['/api/health', '/health'], (req, res) => res.json({ status: 'ok', db: 'postgres' }));
+app.get(['/api/health', '/health'], (req, res) => res.json({ status: 'ok', db: 'turso' }));
 
 // Debug check (Handle both /api/debug and /debug)
 app.get(['/api/debug', '/debug'], async (req, res) => {

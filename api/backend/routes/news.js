@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../data/postgres');
+const { client } = require('../data/turso');
 
 const mapArticle = row => ({
   _id: row.id,
@@ -12,7 +12,7 @@ const mapArticle = row => ({
   region: row.region,
   image: row.image,
   publishedAt: row.published_at,
-  trending: row.trending
+  trending: !!row.trending
 });
 
 // Get latest news with pagination
@@ -22,8 +22,12 @@ router.get('/latest', async (req, res) => {
     const limit = parseInt(req.query.limit) || 18;
     const skip = (page - 1) * limit;
 
-    const result = await pool.query('SELECT * FROM articles ORDER BY published_at DESC LIMIT $1 OFFSET $2', [limit, skip]);
-    const countResult = await pool.query('SELECT COUNT(*) FROM articles');
+    const result = await client.execute({
+      sql: 'SELECT * FROM articles ORDER BY published_at DESC LIMIT ? OFFSET ?',
+      args: [limit, skip]
+    });
+    
+    const countResult = await client.execute('SELECT COUNT(*) as count FROM articles');
     const total = parseInt(countResult.rows[0].count, 10);
 
     res.json({
@@ -47,8 +51,15 @@ router.get('/category/:category', async (req, res) => {
     const limit = parseInt(req.query.limit) || 18;
     const skip = (page - 1) * limit;
 
-    const result = await pool.query('SELECT * FROM articles WHERE category ILIKE $1 ORDER BY published_at DESC LIMIT $2 OFFSET $3', [category, limit, skip]);
-    const countResult = await pool.query('SELECT COUNT(*) FROM articles WHERE category ILIKE $1', [category]);
+    const result = await client.execute({
+      sql: 'SELECT * FROM articles WHERE category LIKE ? ORDER BY published_at DESC LIMIT ? OFFSET ?',
+      args: [`%${category}%`, limit, skip]
+    });
+    
+    const countResult = await client.execute({
+      sql: 'SELECT COUNT(*) as count FROM articles WHERE category LIKE ?',
+      args: [`%${category}%`]
+    });
     const total = parseInt(countResult.rows[0].count, 10);
 
     res.json({ 
@@ -73,20 +84,26 @@ router.get('/region/:region', async (req, res) => {
     const skip = (page - 1) * limit;
     const keywordPattern = `%${region}%`;
 
-    const result = await pool.query(`
-      SELECT * FROM articles 
-      WHERE region ILIKE $1 
-      OR description ILIKE $2 
-      OR title ILIKE $2
-      ORDER BY published_at DESC LIMIT $3 OFFSET $4
-    `, [region, keywordPattern, limit, skip]);
+    const result = await client.execute({
+      sql: `
+        SELECT * FROM articles 
+        WHERE region LIKE ? 
+        OR description LIKE ? 
+        OR title LIKE ?
+        ORDER BY published_at DESC LIMIT ? OFFSET ?
+      `,
+      args: [keywordPattern, keywordPattern, keywordPattern, limit, skip]
+    });
     
-    const countResult = await pool.query(`
-      SELECT COUNT(*) FROM articles 
-      WHERE region ILIKE $1 
-      OR description ILIKE $2 
-      OR title ILIKE $2
-    `, [region, keywordPattern]);
+    const countResult = await client.execute({
+      sql: `
+        SELECT COUNT(*) as count FROM articles 
+        WHERE region LIKE ? 
+        OR description LIKE ? 
+        OR title LIKE ?
+      `,
+      args: [keywordPattern, keywordPattern, keywordPattern]
+    });
     const total = parseInt(countResult.rows[0].count, 10);
 
     res.json({ 
@@ -113,18 +130,24 @@ router.get('/search', async (req, res) => {
     const skip = (page - 1) * limit;
     const keywordPattern = `%${q}%`;
 
-    const result = await pool.query(`
-      SELECT * FROM articles 
-      WHERE title ILIKE $1 
-      OR description ILIKE $1
-      ORDER BY published_at DESC LIMIT $2 OFFSET $3
-    `, [keywordPattern, limit, skip]);
+    const result = await client.execute({
+      sql: `
+        SELECT * FROM articles 
+        WHERE title LIKE ? 
+        OR description LIKE ?
+        ORDER BY published_at DESC LIMIT ? OFFSET ?
+      `,
+      args: [keywordPattern, keywordPattern, limit, skip]
+    });
     
-    const countResult = await pool.query(`
-      SELECT COUNT(*) FROM articles 
-      WHERE title ILIKE $1 
-      OR description ILIKE $1
-    `, [keywordPattern]);
+    const countResult = await client.execute({
+      sql: `
+        SELECT COUNT(*) as count FROM articles 
+        WHERE title LIKE ? 
+        OR description LIKE ?
+      `,
+      args: [keywordPattern, keywordPattern]
+    });
     const total = parseInt(countResult.rows[0].count, 10);
 
     res.json({ 
@@ -143,9 +166,9 @@ router.get('/search', async (req, res) => {
 // Get trending news
 router.get('/trending', async (req, res) => {
   try {
-    let result = await pool.query('SELECT * FROM articles WHERE trending = true ORDER BY published_at DESC LIMIT 10');
+    let result = await client.execute('SELECT * FROM articles WHERE trending = 1 ORDER BY published_at DESC LIMIT 10');
     if (result.rows.length === 0) {
-      result = await pool.query('SELECT * FROM articles ORDER BY published_at DESC LIMIT 10');
+      result = await client.execute('SELECT * FROM articles ORDER BY published_at DESC LIMIT 10');
     }
     res.json({ articles: result.rows.map(mapArticle) });
   } catch (error) {
@@ -156,7 +179,7 @@ router.get('/trending', async (req, res) => {
 // Get all unique sources grouped by region
 router.get('/sources', async (req, res) => {
   try {
-    const result = await pool.query('SELECT DISTINCT source, region FROM articles ORDER BY region, source');
+    const result = await client.execute('SELECT DISTINCT source, region FROM articles ORDER BY region, source');
     const sourcesByRegion = {};
     
     result.rows.forEach(row => {
@@ -182,8 +205,14 @@ router.get('/source/:source', async (req, res) => {
     const limit = parseInt(req.query.limit) || 18;
     const skip = (page - 1) * limit;
 
-    const result = await pool.query('SELECT * FROM articles WHERE source = $1 ORDER BY published_at DESC LIMIT $2 OFFSET $3', [source, limit, skip]);
-    const countResult = await pool.query('SELECT COUNT(*) FROM articles WHERE source = $1', [source]);
+    const result = await client.execute({
+      sql: 'SELECT * FROM articles WHERE source = ? ORDER BY published_at DESC LIMIT ? OFFSET ?',
+      args: [source, limit, skip]
+    });
+    const countResult = await client.execute({
+      sql: 'SELECT COUNT(*) as count FROM articles WHERE source = ?',
+      args: [source]
+    });
     const total = parseInt(countResult.rows[0].count, 10);
 
     res.json({ 
@@ -202,9 +231,9 @@ router.get('/source/:source', async (req, res) => {
 // Manual Fetch Trigger
 router.get('/fetch', async (req, res) => {
   try {
-    console.log('Starting manual fetch...');
+    console.log('Starting manual fetch to Turso...');
     await fetchAndSaveNews();
-    const countResult = await pool.query('SELECT COUNT(*) FROM articles');
+    const countResult = await client.execute('SELECT COUNT(*) as count FROM articles');
     res.json({ 
       message: 'News fetch completed successfully', 
       totalArticles: parseInt(countResult.rows[0].count, 10) 
@@ -218,20 +247,19 @@ router.get('/fetch', async (req, res) => {
 router.post('/manual', async (req, res) => {
   const { title, url, description, source, category, region, image, secret } = req.body;
   
-  // Simple security check (could be enhanced)
   if (secret !== process.env.ADMIN_TOKEN && secret !== 'ttn_admin_2026') {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
-    const published_at = new Date();
-    const result = await pool.query(`
-      INSERT INTO articles (title, url, description, source, category, region, image, published_at, trending)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING *
-    `, [title, url || `manual-${Date.now()}`, description, source || 'TTN News', category, region || 'Global', image, published_at, false]);
+    const published_at = new Date().toISOString();
+    await client.execute({
+      sql: `INSERT INTO articles (title, url, description, source, category, region, image, published_at, trending)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [title, url || `manual-${Date.now()}`, description, source || 'TTN News', category, region || 'Global', image, published_at, 0]
+    });
     
-    res.json({ message: 'Article added successfully', article: result.rows[0] });
+    res.json({ message: 'Article added successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
