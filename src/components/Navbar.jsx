@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
 import './Navbar.css';
 
@@ -55,8 +55,9 @@ const Navbar = () => {
             <div className="top-left">
               <span className="live-date">{formatDateTime(currentDateTime)}</span>
             </div>
-            <div className="top-right">
-              <Link to="/login" className="top-link">Login</Link>
+            <div className="nav-links">
+              <Link to="/" className="nav-link">Home</Link>
+              <Link to="/admin" className="nav-link login-link">Login</Link>
             </div>
           </div>
         </div>
@@ -66,8 +67,17 @@ const Navbar = () => {
             <button className="menu-btn" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
               {menuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
-            <Link to="/" className="navbar-logo">
-              <h1>NOMAD<span>NEWS</span></h1>
+            <Link to="/" className="navbar-brand-centered">
+              <div className="logo-wrapper">
+                <img src="/assets/images/logo.png" alt="TravelTew News" className="navbar-logo-img" />
+              </div>
+              <div className="navbar-logo-text">
+                <div className="brand-primary">
+                  <h1>TRAVEL<span>TEW</span></h1>
+                  <span className="news-tag">News</span>
+                </div>
+                <p className="brand-tagline">Your Global Travel Companion</p>
+              </div>
             </Link>
             <div className="middle-right">
               <button className="search-toggle" onClick={() => setSearchOpen(!searchOpen)} aria-label="Toggle search">
@@ -111,8 +121,14 @@ const Navbar = () => {
         {/* Header */}
         <div className="mobile-menu-header">
           <div>
-            <h2 className="mobile-logo">NOMAD<span>NEWS</span></h2>
-            <p className="mobile-tagline">Your world. Your news.</p>
+            <div className="mobile-logo-container">
+              <img src="/assets/images/logo.png" alt="" className="mobile-logo-img" />
+              <h2 className="mobile-logo">TRAVEL<span>TEW</span> News</h2>
+            </div>
+            <p className="mobile-tagline">Exploring the world, one story at a time.</p>
+            <NavLink to="/category/world" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>World</NavLink>
+            <NavLink to="/category/business" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Business</NavLink>
+            <NavLink to="/admin" className="mobile-nav-item login-item" onClick={() => setMenuOpen(false)}>Admin Login</NavLink>
           </div>
           <button className="mobile-close-btn" onClick={() => setMenuOpen(false)}>
             <X size={22} />
@@ -121,11 +137,11 @@ const Navbar = () => {
 
         {/* About Section */}
         <div className="mobile-section">
-          <h3 className="mobile-section-title">About NomadNews</h3>
+          <h3 className="mobile-section-title">About TravelTew News</h3>
           <p className="mobile-about-text">
-            NomadNews Global is your premier source for international travel news, cultural stories, 
-            and world events — covering every corner of the globe from breaking aviation news to hidden 
-            destinations you'll want to visit next.
+            TravelTew News is your premier destination for global travel insights,
+            breaking aviation updates, and cultural stories from across the planet.
+            We connect you to the latest events and hidden gems in every region.
           </p>
         </div>
 
@@ -168,7 +184,7 @@ const Navbar = () => {
           <p>479+ unique stories updated daily</p>
           <p>Powered by GNews API & RSS Feeds</p>
           <p style={{ marginTop: '0.5rem', color: 'var(--accent)', fontWeight: 600 }}>
-            © 2026 NomadNews Global
+            © 2026 TravelTew News
           </p>
         </div>
       </div>

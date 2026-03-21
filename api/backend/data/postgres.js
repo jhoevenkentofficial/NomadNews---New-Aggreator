@@ -1,16 +1,21 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
+const path = require('path');
 
+// Explicitly load root .env file so it never fails
+dotenv.config({ path: path.join(__dirname, '../../../.env') });
+// Also load the current directory one just in case
 dotenv.config();
 
 // Use POSTGRES_URL for Vercel and Neon compatibility
 const connectionString = process.env.POSTGRES_URL;
 
+// Disable SSL for localhost, enable it for production/Vercel
+const isLocal = !connectionString || connectionString.includes('localhost');
+
 const pool = new Pool({
   connectionString,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ...(isLocal ? { ssl: false } : { ssl: { rejectUnauthorized: false } })
 });
 
 let isInitialized = false;

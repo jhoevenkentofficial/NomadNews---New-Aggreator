@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 import NewsCard from '../components/NewsCard';
 import Pagination from '../components/Pagination';
 import './CategoryPage.css';
@@ -23,8 +24,7 @@ const SearchPage = () => {
       if (!query.trim()) return;
       try {
         setLoading(true);
-        const baseUrl = window.location.origin.includes('localhost') ? 'http://localhost:5000' : '';
-        const res = await axios.get(`${baseUrl}/api/news/search?q=${encodeURIComponent(query)}&page=${currentPage}&limit=28`);
+        const res = await axios.get(`${API_URL}/search?q=${encodeURIComponent(query)}&page=${currentPage}&limit=18`);
         setArticles(res.data.articles || []);
         setTotalPages(res.data.pagination?.totalPages || 1);
         setTotalArticles(res.data.pagination?.totalArticles || 0);

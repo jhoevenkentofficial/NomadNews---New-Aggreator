@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config/api';
+import { RefreshCw } from 'lucide-react';
 import './Sidebar.css';
 
 const REGIONS = [
@@ -12,37 +14,126 @@ const REGIONS = [
 
 const Sidebar = () => {
   const [trending, setTrending] = useState([]);
+  const [sources, setSources] = useState({});
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [expandedRegions, setExpandedRegions] = useState({});
 
   useEffect(() => {
-    const fetchTrending = async () => {
+    const fetchData = async () => {
       try {
-        const baseUrl = window.location.origin.includes('localhost') ? 'http://localhost:5000' : '';
-        const res = await axios.get(`${baseUrl}/api/news/trending`);
-        setTrending(res.data.articles || []);
+        const [trendingRes, sourcesRes] = await Promise.all([
+          axios.get(`${API_URL}/trending`),
+          axios.get(`${API_URL}/sources`)
+        ]);
+        setTrending(trendingRes.data.articles || []);
+        setSources(sourcesRes.data || {});
       } catch (err) {
-        console.error('Error fetching trending news:', err);
+        console.error('Error fetching sidebar data:', err);
       } finally {
         setLoading(false);
       }
     };
-    fetchTrending();
+    fetchData();
   }, []);
+
+  const toggleRegion = (region) => {
+    setExpandedRegions(prev => ({
+      ...prev,
+      [region]: !prev[region]
+    }));
+  };
+
+  const handleManualRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await axios.get(`${API_URL}/fetch`);
+      // Wait a few seconds for the fetcher to do some work, then reload page
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } catch (err) {
+      console.error('Error triggering manual refresh:', err);
+      setRefreshing(false);
+    }
+  };
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-section">
-        <h3 className="section-title">Latest by Region</h3>
-        <div className="region-links">
-          {REGIONS.map((region) => (
-            <NavLink
-              key={region}
-              to={`/region/${encodeURIComponent(region)}`}
-              className={({ isActive }) => isActive ? 'region-item active' : 'region-item'}
+      <div className="sidebar-section ttn-section">
+        <h3 className="section-title ttn-title">TTN News</h3>
+        <div className="ttn-sub-sections">
+          {['Announcements', 'Events', 'Highlights', 'Latest TTN'].map(sub => (
+            <NavLink 
+              key={sub} 
+              to={`/category/${encodeURIComponent(sub)}`}
+              className={({ isActive }) => isActive ? 'ttn-item active' : 'ttn-item'}
             >
-              {region}
+              <span className="ttn-dot"></span>
+              {sub}
             </NavLink>
           ))}
+        </div>
+      </div>
+
+      <div className="sidebar-section refresh-section">
+        <button 
+          className={`refresh-btn ${refreshing ? 'refreshing' : ''}`} 
+          onClick={handleManualRefresh}
+          disabled={refreshing}
+        >
+          <RefreshCw size={16} className={refreshing ? 'spin' : ''} />
+          {refreshing ? 'Updating News...' : 'Update News Now'}
+        </button>
+      </div>
+
+      <div className="sidebar-section">
+        <h3 className="section-title">Media Outlets</h3>
+        <div className="region-list-container">
+          {Object.keys(sources).length > 0 ? (
+            Object.entries(sources).map(([region, regionSources]) => (
+              <div key={region} className="sidebar-region-group">
+                <div 
+                  className={`region-header ${expandedRegions[region] ? 'expanded' : ''}`}
+                  onClick={() => toggleRegion(region)}
+                >
+                  <NavLink
+                    to={`/region/${encodeURIComponent(region)}`}
+                    className={({ isActive }) => isActive ? 'region-link active' : 'region-link'}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {region}
+                  </NavLink>
+                  <span className="expand-icon">{expandedRegions[region] ? '−' : '+'}</span>
+                </div>
+                {expandedRegions[region] && (
+                  <div className="source-list">
+                    {regionSources.slice(0, 4).map((source) => (
+                      <NavLink
+                        key={source}
+                        to={`/source/${encodeURIComponent(source)}`}
+                        className={({ isActive }) => isActive ? 'source-item active' : 'source-item'}
+                      >
+                        {source}
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="region-links">
+              {REGIONS.map((region) => (
+                <NavLink
+                  key={region}
+                  to={`/region/${encodeURIComponent(region)}`}
+                  className={({ isActive }) => isActive ? 'region-item active' : 'region-item'}
+                >
+                  {region}
+                </NavLink>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       

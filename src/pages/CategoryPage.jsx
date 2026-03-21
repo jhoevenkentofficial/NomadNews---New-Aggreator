@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 import NewsCard from '../components/NewsCard';
 import Pagination from '../components/Pagination';
 import './CategoryPage.css';
@@ -19,12 +20,11 @@ const CategoryPage = () => {
   }, [categoryName]);
 
   useEffect(() => {
-    const fetchCategoryNews = async () => {
+    const fetchNews = async () => {
       try {
         setLoading(true);
-        const baseUrl = window.location.origin.includes('localhost') ? 'http://localhost:5000' : '';
         
-        const res = await axios.get(`${baseUrl}/api/news/category/${encodeURIComponent(categoryName)}?page=${currentPage}&limit=28`);
+        const res = await axios.get(`${API_URL}/category/${encodeURIComponent(categoryName)}?page=${currentPage}&limit=18`);
         setArticles(res.data.articles);
         setTotalPages(res.data.pagination.totalPages);
       } catch (err) {
@@ -35,7 +35,7 @@ const CategoryPage = () => {
       }
     };
 
-    fetchCategoryNews();
+    fetchNews();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [categoryName, currentPage]);
 

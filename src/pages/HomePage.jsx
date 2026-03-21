@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 import NewsCard from '../components/NewsCard';
 import Pagination from '../components/Pagination';
 import './HomePage.css';
@@ -14,8 +15,7 @@ const HomePage = () => {
     const fetchLatestNews = async () => {
       try {
         setLoading(true);
-        const baseUrl = window.location.origin.includes('localhost') ? 'http://localhost:5000' : '';
-        const res = await axios.get(`${baseUrl}/api/news/latest?page=${currentPage}&limit=40`);
+        const res = await axios.get(`${API_URL}/latest?page=${currentPage}&limit=18`);
         setNews(res.data.articles);
         setTotalPages(res.data.pagination.totalPages);
       } catch (error) {
@@ -55,6 +55,12 @@ const HomePage = () => {
           <NewsCard key={article._id || article.url} article={article} />
         ))}
       </div>
+
+      <Pagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 };

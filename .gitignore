@@ -3,12 +3,17 @@ dist/
 frontend/dist/
 frontend/build/
 
+# Deployment and Package files
+deployment_package/
+check_db.js
+test_fetch.js
+
 # Vite cache
 frontend/.vite/
 
 # Logs
-*.log
-npm-debug.log*
+# *.log  <-- These lines were moved to "Deployment and Package files"
+# npm-debug.log*
 
 # Node modules
 node_modules/

@@ -6,6 +6,8 @@ import HomePage from './pages/HomePage';
 import RegionPage from './pages/RegionPage';
 import CategoryPage from './pages/CategoryPage';
 import SearchPage from './pages/SearchPage';
+import SourcePage from './pages/SourcePage';
+import AdminPage from './pages/AdminPage';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
               <Route path="/region/:regionName" element={<RegionPage />} />
               <Route path="/category/:categoryName" element={<CategoryPage />} />
               <Route path="/search" element={<SearchPage />} />
+              <Route path="/source/:sourceName" element={<SourcePage />} />
+              <Route path="/admin" element={<AdminPage />} />
             </Routes>
           </main>
         </div>

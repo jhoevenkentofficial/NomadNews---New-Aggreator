@@ -1,10 +1,12 @@
 .navbar {
-  background: var(--bg-color);
-  border-bottom: 3px solid var(--accent);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
   width: 100%;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
 }
 
 .navbar-container {
@@ -29,6 +31,14 @@
   width: 100%;
 }
 
+.navbar-middle .navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100px;
+  position: relative;
+}
+
 .live-date {
   font-variant-numeric: tabular-nums;
   font-size: 0.78rem;
@@ -42,27 +52,102 @@
 }
 
 /* Middle Bar (Logo) */
-.navbar-middle {
-  padding: 1.5rem 0;
-}
-
-.navbar-middle .navbar-container {
+.navbar-brand-centered {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 1.5rem;
+  text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.navbar-logo h1 {
-  font-size: 3rem;
-  letter-spacing: -1px;
-  color: #000;
+.navbar-brand-centered:hover {
+  transform: translateX(-50%) translateY(-1px);
+}
+
+.logo-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.navbar-brand-centered:hover .logo-wrapper::after {
+  opacity: 1;
+}
+
+.navbar-logo-img {
+  height: 60px;
+  width: auto;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand-centered:hover .navbar-logo-img {
+  transform: scale(1.05);
+}
+
+.navbar-logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-primary {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.navbar-logo-text h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.6rem;
+  letter-spacing: -0.04em;
+  color: #1a1a1a;
   margin: 0;
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: normal;
 }
 
-.navbar-logo span {
-  color: var(--accent);
-  font-family: 'Roboto', sans-serif;
+.navbar-logo-text span {
+  background: linear-gradient(135deg, #FF3D00 0%, #D50000 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+}
+
+.news-tag {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.3rem;
+  color: #333;
   font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  position: relative;
+  top: -2px;
+}
+
+.brand-tagline {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  color: #666;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0;
+  opacity: 0.8;
 }
 
 .menu-btn, .search-toggle {
@@ -178,21 +263,34 @@
   flex-shrink: 0;
 }
 
-.mobile-logo {
-  font-size: 1.6rem;
-  font-weight: 900;
-  color: #ffffff;
-  margin: 0 0 0.15rem 0;
-  letter-spacing: -1px;
-  font-family: 'Playfair Display', serif;
+.mobile-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
 }
-.mobile-logo span { color: #d32f2f; }
+
+.mobile-logo-img {
+  height: 40px;
+  width: auto;
+  border-radius: 4px;
+}
+
+.mobile-logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.mobile-logo span { color: var(--accent); }
 
 .mobile-tagline {
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.65);
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
   margin: 0;
-  font-style: italic;
+  font-weight: 400;
 }
 
 .mobile-close-btn {
@@ -294,8 +392,28 @@
 }
 
 @media (max-width: 768px) {
-  .navbar-logo h1 {
-    font-size: 2rem;
+  .navbar-brand-centered {
+    position: static;
+    transform: none;
+    left: auto;
+    gap: 0.75rem;
+    flex: 1;
+    justify-content: center;
+  }
+  .navbar-brand-centered:hover {
+    transform: none;
+  }
+  .navbar-logo-text h1 {
+    font-size: 1.3rem;
+  }
+  .logo-suffix, .news-tag {
+    font-size: 0.7rem;
+  }
+  .brand-tagline {
+    display: none;
+  }
+  .navbar-logo-img {
+    height: 36px;
   }
   .navbar-top {
     display: none;

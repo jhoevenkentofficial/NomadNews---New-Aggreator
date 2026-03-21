@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 import NewsCard from '../components/NewsCard';
 import Pagination from '../components/Pagination';
 import './HomePage.css';
@@ -19,12 +20,10 @@ const RegionPage = () => {
   }, [regionName]);
 
   useEffect(() => {
-    const fetchRegionNews = async () => {
+    const fetchNews = async () => {
       try {
         setLoading(true);
-        const baseUrl = window.location.origin.includes('localhost') ? 'http://localhost:5000' : '';
-        const decodedRegion = decodeURIComponent(regionName);
-        const res = await axios.get(`${baseUrl}/api/news/region/${encodeURIComponent(decodedRegion)}?page=${currentPage}&limit=28`);
+        const res = await axios.get(`${API_URL}/region/${encodeURIComponent(regionName)}?page=${currentPage}&limit=18`);
         setArticles(res.data.articles);
         setTotalPages(res.data.pagination.totalPages);
       } catch (err) {
@@ -35,7 +34,7 @@ const RegionPage = () => {
       }
     };
 
-    fetchRegionNews();
+    fetchNews();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [regionName, currentPage]);
 

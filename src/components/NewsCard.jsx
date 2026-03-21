@@ -24,7 +24,7 @@ const NewsCard = ({ article, isHero = false }) => {
           <div className="category-badge">{category}</div>
         </div>
         <div className="hero-content">
-          <span className="source-tag">{source.name}</span>
+          <span className="source-tag">{source}</span>
           <h2 className="hero-title">{title}</h2>
           <p className="hero-desc">{description}</p>
           <span className="date-tag">{formatDate(publishedAt)}</span>
@@ -44,7 +44,7 @@ const NewsCard = ({ article, isHero = false }) => {
       </div>
       <div className="standard-content">
         <div className="meta-row">
-          <span className="source-tag">{source.name}</span>
+          <span className="source-tag">{source}</span>
           <span className="category-tag">{category}</span>
         </div>
         <h3 className="standard-title">{title}</h3>
