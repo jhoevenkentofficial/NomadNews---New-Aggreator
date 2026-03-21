@@ -245,9 +245,10 @@ router.get('/fetch', async (req, res) => {
 
 // Manual Article Submission (Admin)
 router.post('/manual', async (req, res) => {
-  const { title, url, description, source, category, region, image, secret } = req.body;
+  const clientSecret = (secret || '').trim();
+  const envSecret = (process.env.ADMIN_TOKEN || 'ttn_admin_2026').trim();
   
-  if (secret !== process.env.ADMIN_TOKEN && secret !== 'ttn_admin_2026') {
+  if (clientSecret !== envSecret && clientSecret !== 'ttn_admin_2026') {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
