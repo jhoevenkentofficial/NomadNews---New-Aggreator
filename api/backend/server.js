@@ -24,12 +24,13 @@ app.get(['/api/health', '/health'], (req, res) => res.json({ status: 'ok', db: '
 app.get(['/api/debug', '/debug'], async (req, res) => {
   let count = 0;
   try {
-    const r = await require('./data/postgres').pool.query('SELECT count(*) FROM articles');
+    const { client } = require('./data/turso');
+    const r = await client.execute('SELECT count(*) as count FROM articles');
     count = r.rows[0].count;
   } catch (e) {}
   
   res.json({
-    db_env: !!process.env.DATABASE_URL,
+    db_env: !!process.env.TURSO_URL,
     news_env: !!process.env.NEWS_API_KEY,
     article_count: count,
     received_url: req.url,
@@ -40,8 +41,8 @@ app.get(['/api/debug', '/debug'], async (req, res) => {
 // Export for Vercel
 module.exports = app;
 
-// Only listen if not running in Vercel
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+// Listen locally (Vercel handles this in production)
+if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
