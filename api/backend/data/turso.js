@@ -1,8 +1,13 @@
 const { createClient } = require('@libsql/client');
 require('dotenv').config();
 
-const url = process.env.TURSO_URL || process.env.DATABASE_URL;
-const authToken = process.env.TURSO_AUTH_TOKEN;
+let url = (process.env.TURSO_URL || process.env.DATABASE_URL || '').trim();
+const authToken = (process.env.TURSO_AUTH_TOKEN || '').trim();
+
+// Support for legacy DATABASE_URL which might have sslmode (unsupported by Turso)
+if (url.includes('?')) {
+  url = url.split('?')[0];
+}
 
 const client = createClient({
   url: url || 'file:local.db',
