@@ -1,6 +1,6 @@
 const axios = require('axios');
 const Parser = require('rss-parser');
-const { pool } = require('../data/postgres');
+const { client } = require('../data/turso');
 const parser = new Parser();
 
 const fetchAndSaveNews = async () => {
@@ -171,32 +171,40 @@ const fetchAndSaveNews = async () => {
         return savedCount;
     };
 
+    const detectImage = (item) => {
+      if (item.enclosure?.url) return item.enclosure.url;
+      if (item.media?.[0]?.url) return item.media[0].url;
+      if (item.image) return item.image;
+      return `https://picsum.photos/seed/${encodeURIComponent(item.title || Math.random())}/800/400`;
+    };
+
     const fetchPromises = feeds.map(async (feed) => {
       try {
         const feedData = await parser.parseURL(feed.url);
-        const articlesToSave = [];
+        const articles = [];
 
         for (const item of feedData.items) {
           const title = item.title || '';
-          const description = item.contentSnippet || item.content || '';
-          const detectedRegion = detectRegion(title, description);
+          const url = item.link || item.guid || '';
+          if (!url) continue;
 
-          const article = {
-            title: title,
-            url: item.link,
-            description: description,
-            source: (feedData.title || feed.url.split('/')[2] || 'Travel News').trim(),
-            category: feed.category.toLowerCase(),
-            region: feed.region !== 'Global' ? feed.region : detectedRegion,
-            image: item.enclosure?.url || `https://picsum.photos/seed/${encodeURIComponent(title)}/800/400`,
-            publishedAt: new Date(item.pubDate || Date.now()),
-            trending: Math.random() > 0.8
-          };
-
-          if (!article.url || !article.title) continue;
+          const description = item.contentSnippet || item.description || item.summary || '';
+          const pubDate = item.pubDate ? new Date(item.pubDate) : new Date();
           
-          await upsertArticle(article);
+          articles.push({
+            title,
+            url,
+            description,
+            source: feed.name || feed.url.split('/')[2] || 'News Source',
+            category: feed.category || 'General',
+            region: feed.region || detectRegion(title, description),
+            image: detectImage(item),
+            publishedAt: pubDate.toISOString(),
+            trending: false
+          });
         }
+        
+        await saveArticles(articles);
       } catch (e) {
         console.error(`Feed Error (${feed.url}):`, e.message);
       }
@@ -210,22 +218,19 @@ const fetchAndSaveNews = async () => {
       for (const q of queries) {
         try {
           const gNewsRes = await axios.get(`https://gnews.io/api/v4/search?q=${q}&token=${process.env.NEWS_API_KEY}&lang=en&max=20`);
-          for (const item of gNewsRes.data.articles) {
-            const detectedRegion = detectRegion(item.title, item.description);
-            const article = {
-              title: item.title,
-              url: item.url,
-              description: item.description,
-              source: item.source.name,
-              category: q.toLowerCase(),
-              region: detectedRegion,
-              image: item.image || `https://picsum.photos/seed/${encodeURIComponent(item.title)}/800/400`,
-              publishedAt: new Date(item.publishedAt),
-              trending: Math.random() > 0.5
-            };
+          const gNewsArticles = gNewsRes.data.articles.map(item => ({
+            title: item.title,
+            url: item.url,
+            description: item.description,
+            source: item.source.name,
+            category: q.toLowerCase(),
+            region: detectRegion(item.title, item.description),
+            image: item.image || `https://picsum.photos/seed/${encodeURIComponent(item.title)}/800/400`,
+            publishedAt: new Date(item.publishedAt).toISOString(),
+            trending: Math.random() > 0.8
+          }));
 
-            await upsertArticle(article);
-          }
+          await saveArticles(gNewsArticles);
         } catch (e) {
           console.error(`GNews Error (${q}):`, e.message);
         }
