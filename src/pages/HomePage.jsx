@@ -17,8 +17,10 @@ const HomePage = () => {
       try {
         setLoading(true);
         const res = await axios.get(`${API_URL}/latest?page=${currentPage}&limit=18`);
+        console.log('API Response for /latest:', res.data);
         if (res.data && res.data.articles) {
           setNews(res.data.articles);
+          console.log(`Successfully set ${res.data.articles.length} articles`);
           setTotalPages(res.data.pagination?.totalPages || 1);
         } else {
           setNews([]);

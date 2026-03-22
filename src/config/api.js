@@ -10,7 +10,12 @@ const getBaseUrl = () => {
   }
   
   // Default to relative path for unified hosting (Vercel)
-  return '/api/news';
+  const url = '/api/news';
+  console.log('API_URL initialized as:', url);
+  if (typeof window !== 'undefined') {
+    window.API_DEBUG = { url, origin: window.location.origin };
+  }
+  return url;
 };
 
 export const API_URL = getBaseUrl();
