@@ -6,107 +6,29 @@ const parser = new Parser();
 const fetchAndSaveNews = async () => {
   try {
     const feeds = [
-      // North America
-      { url: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml', category: 'world', region: 'North America' },
-      { url: 'http://rss.cnn.com/rss/edition.rss', category: 'world', region: 'North America' },
-      { url: 'https://moxie.foxnews.com/google-publisher/latest.xml', category: 'world', region: 'North America' },
-      { url: 'https://www.cbc.ca/cmlink/rss-topstories', category: 'world', region: 'North America' },
-
-      // Central America
-      { url: 'https://www.newsamericasnow.com/feed/', category: 'world', region: 'Central America' },
-      { url: 'https://latinamericareports.com/feed/', category: 'world', region: 'Central America' },
-      { url: 'https://elsalvadorinfo.net/feed/', category: 'world', region: 'Central America' },
-      { url: 'https://costaricanewssite.com/feed/', category: 'world', region: 'Central America' },
-
-      // Caribbean
-      { url: 'https://caribbeannewsglobal.com/feed/', category: 'world', region: 'Caribbean' },
-      { url: 'https://www.stvincenttimes.com/feed/', category: 'world', region: 'Caribbean' },
-      { url: 'https://antiguaobserver.com/feed/', category: 'world', region: 'Caribbean' },
-      { url: 'https://caribbean.loopnews.com/rss-feed', category: 'world', region: 'Caribbean' },
-
-      // South America
-      { url: 'https://en.mercopress.com/rss/', category: 'world', region: 'South America' },
-      { url: 'https://www.batimes.com.ar/feed/', category: 'world', region: 'South America' },
-      { url: 'https://thecitypaperbogota.com/feed/', category: 'world', region: 'South America' },
-
-      // U.K. & Ireland
-      { url: 'https://www.independent.co.uk/news/uk/rss', category: 'world', region: 'U.K. & Ireland' },
-      { url: 'https://www.irishtimes.com/arc/outboundfeeds/rss/?outputType=xml', category: 'world', region: 'U.K. & Ireland' },
-      { url: 'http://feeds.bbci.co.uk/news/uk/rss.xml', category: 'world', region: 'U.K. & Ireland' },
-
-      // Western Europe
-      { url: 'http://feeds.bbci.co.uk/news/world/europe/rss.xml', category: 'world', region: 'Western Europe' },
-      { url: 'https://www.france24.com/en/europe/rss', category: 'world', region: 'Western Europe' },
-      { url: 'https://rss.dw.com/rdf/rss-en-eu', category: 'world', region: 'Western Europe' },
-      { url: 'https://www.theguardian.com/europe/rss', category: 'world', region: 'Western Europe' },
-
-      // Eastern Europe
-      { url: 'https://kyivindependent.com/feed', category: 'world', region: 'Eastern Europe' },
-      { url: 'https://neweasterneurope.eu/feed/', category: 'world', region: 'Eastern Europe' },
-      { url: 'https://balkaninsight.com/feed/', category: 'world', region: 'Eastern Europe' },
-
-      // East Asia
-      { url: 'https://www.scmp.com/rss/91/feed', category: 'world', region: 'East Asia' },
-      { url: 'https://www.japantimes.co.jp/feed/', category: 'world', region: 'East Asia' },
-      { url: 'https://www.koreatimes.co.kr/www/rss/world.xml', category: 'world', region: 'East Asia' },
-      { url: 'https://en.yna.co.kr/RSS/news.xml', category: 'world', region: 'East Asia' },
-
-      // Southeast Asia
-      { url: 'https://www.bangkokpost.com/rss/data/topstories.xml', category: 'world', region: 'Southeast Asia' },
-      { url: 'https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml', category: 'world', region: 'Southeast Asia' },
-      { url: 'https://www.inquirer.net/fullfeed', category: 'world', region: 'Southeast Asia' },
-      { url: 'https://www.thestar.com.my/rss/news', category: 'world', region: 'Southeast Asia' },
-
-      // South Asia
-      { url: 'https://timesofindia.indiatimes.com/rssfeedstopstories.cms', category: 'world', region: 'South Asia' },
-      { url: 'https://www.thehindu.com/news/feeder/default.rss', category: 'world', region: 'South Asia' },
-      { url: 'https://www.dawn.com/feeds/home/', category: 'world', region: 'South Asia' },
-
-      // Central Asia
-      { url: 'https://akipress.com/rss/', category: 'world', region: 'Central Asia' },
-      { url: 'https://timesca.com/feed/', category: 'world', region: 'Central Asia' },
-      { url: 'https://centralasia.media/rss', category: 'world', region: 'Central Asia' },
-
-      // Africa
-      { url: 'https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf', category: 'world', region: 'Africa' },
-      { url: 'http://feeds.bbci.co.uk/news/world/africa/rss.xml', category: 'world', region: 'Africa' },
-      { url: 'https://mg.co.za/rss.xml', category: 'world', region: 'Africa' },
-      { url: 'https://www.independent.co.ug/feed/', category: 'world', region: 'Africa' },
-
-      // Middle East
-      { url: 'https://www.aljazeera.com/xml/rss/all.xml', category: 'world', region: 'Middle East' },
-      { url: 'http://feeds.bbci.co.uk/news/world/middle_east/rss.xml', category: 'world', region: 'Middle East' },
-      { url: 'https://www.timesofisrael.com/feed/', category: 'world', region: 'Middle East' },
-
-      // Oceania
-      { url: 'https://www.abc.net.au/news/feed/51120/rss.xml', category: 'world', region: 'Oceania' },
-      { url: 'https://www.smh.com.au/rss/feed.xml', category: 'world', region: 'Oceania' },
-      { url: 'https://www.rnz.co.nz/rss/news.xml', category: 'world', region: 'Oceania' },
-      { url: 'https://www.nzherald.co.nz/rss', category: 'world', region: 'Oceania' },
-      
-      // Thailand Specific (Requested by user)
-      { url: 'https://www.bangkokpost.com/rss/data/topstories.xml', category: 'thailand', region: 'Southeast Asia' },
-      { url: 'https://www.thaiexaminer.com/feed/', category: 'thailand', region: 'Southeast Asia' },
-      { url: 'https://thethaiger.com/feed', category: 'thailand', region: 'Southeast Asia' },
-      
-      // Business
-      { url: 'https://skift.com/feed/', category: 'Business', region: 'Global' },
-      { url: 'https://www.economist.com/business/rss.xml', category: 'Business', region: 'Global' },
-      
-      // Travel & Lifestyle
-      { url: 'https://www.travelpulse.com/rss/news.rss', category: 'Travel', region: 'Global' },
-      { url: 'https://www.cntraveler.com/feed/rss', category: 'Travel', region: 'Global' },
-      { url: 'https://www.wired.com/feed/rss', category: 'Lifestyle', region: 'Global' },
-      
-      { url: 'https://www.theguardian.com/commentisfree/rss', category: 'Opinion', region: 'Global' },
+      // Travel Industry & News
+      { url: 'https://skift.com/feed/', category: 'travel-news', region: 'Global' },
+      { url: 'https://www.travelpulse.com/rss/news.rss', category: 'travel-news', region: 'Global' },
+      { url: 'https://www.cntraveler.com/feed/rss', category: 'destinations', region: 'Global' },
+      { url: 'https://www.traveldailymedia.com/feed/', category: 'travel-news', region: 'Global' },
       
       // Flights & Aviation
       { url: 'https://simpleflying.com/feed/', category: 'flights', region: 'Global' },
-
-      // Video (Requested by user)
-      { url: 'http://feeds.bbci.co.uk/news/video_and_audio/news_front_page/rss.xml', category: 'video', region: 'Global' },
-      { url: 'http://feeds.bbci.co.uk/news/video_and_audio/world/rss.xml', category: 'video', region: 'Global' },
-      { url: 'https://www.france24.com/en/rss', category: 'video', region: 'Global' }
+      { url: 'https://onemileatatime.com/feed/', category: 'flights', region: 'Global' },
+      
+      // Hotels & Resorts
+      { url: 'https://www.hotelmanagement.net/rss.xml', category: 'hotels', region: 'Global' },
+      { url: 'https://www.boutiquehotelnews.com/feed/', category: 'hotels', region: 'Global' },
+      
+      // Cruises
+      { url: 'https://www.cruisecritic.com/rss/news', category: 'cruises', region: 'Global' },
+      { url: 'https://porthole.com/feed/', category: 'cruises', region: 'Global' },
+      
+      // Regional Travel (Examples)
+      { url: 'https://www.lonelyplanet.com/news/feed', category: 'destinations', region: 'Global' },
+      { url: 'https://thethaiger.com/category/travel/feed', category: 'destinations', region: 'Southeast Asia' },
+      { url: 'https://www.nomadicmatt.com/travel-blogs/feed/', category: 'tips', region: 'Global' },
+      { url: 'https://thepointsguy.com/feed/', category: 'tips', region: 'Global' }
     ];
 
     const regionKeywords = {
@@ -214,7 +136,7 @@ const fetchAndSaveNews = async () => {
 
     // GNews API
     if (process.env.NEWS_API_KEY) {
-      const queries = ['travel', 'technology', 'world', 'business', 'thailand'];
+      const queries = ['travel', 'tourism', 'airlines', 'cruises', 'hotels', 'attractions'];
       for (const q of queries) {
         try {
           const gNewsRes = await axios.get(`https://gnews.io/api/v4/search?q=${q}&token=${process.env.NEWS_API_KEY}&lang=en&max=20`);

@@ -5,7 +5,7 @@ import './Navbar.css';
 
 const Navbar = () => {
   const categories = [
-    'Thailand', 'World', 'Business', 'Lifestyle', 'Travel', 'Flights', 'Opinion', 'Video'
+    'Travel News', 'Destinations', 'Flights', 'Hotels', 'Cruises', 'Tips'
   ];
 
   const regions = [
@@ -109,7 +109,14 @@ const Navbar = () => {
           <div className="navbar-container">
             <ul className="nav-links">
               {categories.map(cat => (
-                <li key={cat}><Link to={`/category/${cat.toLowerCase()}`} onClick={() => setMenuOpen(false)}>{cat}</Link></li>
+                <li key={cat}>
+                  <Link 
+                    to={`/category/${cat.toLowerCase().replace(/\\s+/g, '-')}`} 
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {cat}
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>
@@ -126,8 +133,10 @@ const Navbar = () => {
               <h2 className="mobile-logo">TRAVEL<span>TEW</span> News</h2>
             </div>
             <p className="mobile-tagline">Exploring the world, one story at a time.</p>
-            <NavLink to="/category/world" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>World</NavLink>
-            <NavLink to="/category/business" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Business</NavLink>
+            <NavLink to="/category/travel-news" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Travel News</NavLink>
+            <NavLink to="/category/destinations" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Destinations</NavLink>
+            <NavLink to="/category/flights" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Flights</NavLink>
+            <NavLink to="/category/hotels" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Hotels</NavLink>
             <NavLink to="/admin" className="mobile-nav-item login-item" onClick={() => setMenuOpen(false)}>Admin Login</NavLink>
           </div>
           <button className="mobile-close-btn" onClick={() => setMenuOpen(false)}>
@@ -152,7 +161,7 @@ const Navbar = () => {
             {categories.map(cat => (
               <Link
                 key={cat}
-                to={`/category/${cat.toLowerCase()}`}
+                to={`/category/${cat.toLowerCase().replace(/\\s+/g, '-')}`}
                 className="mobile-category-chip"
                 onClick={() => setMenuOpen(false)}
               >
