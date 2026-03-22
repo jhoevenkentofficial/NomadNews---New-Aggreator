@@ -1,78 +1,70 @@
-const axios = require('axios');
 const Parser = require('rss-parser');
+const parser = new Parser({
+  headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36' }
+});
+const axios = require('axios');
 const { client } = require('../data/turso');
-const parser = new Parser();
 
 const fetchAndSaveNews = async () => {
   try {
     const feeds = [
       // --- GLOBAL PRIMARY ---
       { url: 'https://skift.com/feed/', category: 'travel-news', region: 'Global' },
-      { url: 'https://www.travelpulse.com/rss/news.rss', category: 'travel-news', region: 'Global' },
       { url: 'https://www.cntraveler.com/feed/rss', category: 'destinations', region: 'Global' },
       
       // --- REGIONAL TRAVEL ---
       // North America
-      { url: 'https://www.travelweekly.com/RSS/News', category: 'travel-news', region: 'North America' },
-      { url: 'https://skift.com/feed/', category: 'travel-news', region: 'North America' }, // Heavy US focus
       { url: 'https://www.travelpulse.com/rss/news.rss', category: 'travel-news', region: 'North America' },
-      { url: 'https://paxnews.com/rss', category: 'travel-news', region: 'North America' },
+      { url: 'https://www.travelweek.ca/feed/', category: 'travel-news', region: 'North America' },
+      { url: 'https://www.travelpress.com/feed/', category: 'travel-news', region: 'North America' },
+      { url: 'https://eturbonews.com/feed/', category: 'travel-news', region: 'North America' },
+
+      // South America & Caribbean
+      { url: 'https://www.caribbeanjournal.com/feed/', category: 'travel-news', region: 'South America' },
+      { url: 'https://en.mercopress.com/rss/tourism', category: 'travel-news', region: 'South America' },
+      { url: 'https://www.luxuryatinamerica.com/blog/feed/', category: 'destinations', region: 'South America' },
 
       // Europe
-      { url: 'https://www.travelweekly.co.uk/rss/news', category: 'travel-news', region: 'Western Europe' },
-      { url: 'https://www.schengenvisainfo.com/news/feed/', category: 'travel-news', region: 'Western Europe' },
-      { url: 'https://www.ttgmedia.com/rss/news', category: 'travel-news', region: 'Western Europe' },
-      { url: 'https://emerging-europe.com/category/news/feed/', category: 'travel-news', region: 'Eastern Europe' },
+      { url: 'https://www.thelocal.com/feed/', category: 'travel-news', region: 'Europe' },
+      { url: 'https://www.travelweekly.co.uk/rss/news', category: 'travel-news', region: 'Europe' },
+      { url: 'https://www.schengennews.com/feed/', category: 'travel-news', region: 'Europe' },
 
       // Asia
-      { url: 'https://www.traveldailymedia.com/category/asia/feed/', category: 'travel-news', region: 'South Asia' },
-      { url: 'https://thethaiger.com/category/travel/feed', category: 'destinations', region: 'Southeast Asia' },
-      { url: 'https://ttgasia.com/feed/', category: 'travel-news', region: 'Southeast Asia' },
-      { url: 'https://www.webintravel.com/feed/', category: 'travel-news', region: 'East Asia' },
+      { url: 'https://www.travelnewsasia.com/travelnews.xml', category: 'travel-news', region: 'Asia' },
+      { url: 'https://www.travelweekly-asia.com/rss/all-stories', category: 'travel-news', region: 'Asia' },
+      { url: 'https://thethaiger.com/category/travel/feed', category: 'destinations', region: 'Asia' },
+      { url: 'https://ttgasia.com/feed/', category: 'travel-news', region: 'Asia' },
 
       // Africa
-      { url: 'https://www.africantravelcanvas.com/feed/', category: 'tips', region: 'Africa' },
       { url: 'https://www.tourismupdate.co.za/rss.xml', category: 'travel-news', region: 'Africa' },
-      { url: 'https://travelnews.africa/feed/', category: 'travel-news', region: 'Africa' },
+      { url: 'https://blog.sa-venues.com/feed/', category: 'destinations', region: 'Africa' },
       { url: 'https://www.getaway.co.za/feed/', category: 'destinations', region: 'Africa' },
 
       // Middle East
-      { url: 'https://gulfbusiness.com/industry/tourism/feed/', category: 'travel-news', region: 'Middle East' },
       { url: 'https://www.hoteliermiddleeast.com/feed', category: 'hotels', region: 'Middle East' },
       { url: 'https://www.arabianbusiness.com/industries/travel-hospitality/feed', category: 'travel-news', region: 'Middle East' },
-      { url: 'https://ttgmena.com/feed/', category: 'travel-news', region: 'Middle East' },
 
       // Oceania
       { url: 'https://www.travelweekly.com.au/feed/', category: 'travel-news', region: 'Oceania' },
       { url: 'https://karryon.com.au/feed/', category: 'travel-news', region: 'Oceania' },
       { url: 'https://www.traveltalkmag.com.au/feed/', category: 'destinations', region: 'Oceania' },
-      { url: 'https://latte.travel/feed/', category: 'travel-news', region: 'Oceania' },
 
       // --- NICHES ---
       // Flights
       { url: 'https://simpleflying.com/feed/', category: 'flights', region: 'Global' },
       { url: 'https://onemileatatime.com/feed/', category: 'flights', region: 'Global' },
       // Hotels
-      { url: 'https://www.hotelmanagement.net/rss.xml', category: 'hotels', region: 'Global' },
-      // Cruises
-      { url: 'https://www.cruisecritic.com/rss/news', category: 'cruises', region: 'Global' }
+      { url: 'https://www.hotelmanagement.net/rss.xml', category: 'hotels', region: 'Global' }
     ];
 
     const regionKeywords = {
-      'North America': ['USA', 'Canada', 'Mexico', 'American', 'Washington', 'New York'],
-      'Central America': ['Costa Rica', 'Panama', 'Guatemala', 'Honduras', 'El Salvador', 'Nicaragua', 'Belize'],
-      'Caribbean': ['Caribbean', 'Jamaica', 'Cuba', 'Puerto Rico', 'Bahamas', 'Barbados', 'Trinidad', 'Haiti'],
-      'South America': ['Brazil', 'Argentina', 'Chile', 'Colombia', 'Peru', 'Venezuela', 'Ecuador', 'Uruguay'],
-      'U.K. & Ireland': ['UK', 'Britain', 'England', 'Scotland', 'Wales', 'Ireland', 'London', 'Dublin', 'Belfast'],
-      'Western Europe': ['France', 'Germany', 'Italy', 'Spain', 'Europe', 'Paris', 'Berlin', 'Madrid', 'EU'],
-      'Eastern Europe': ['Russia', 'Ukraine', 'Poland', 'Romania', 'Balkans', 'Kyiv', 'Warsaw', 'Prague'],
-      'Africa': ['Africa', 'Nigeria', 'Kenya', 'Egypt', 'South Africa', 'Nairobi', 'Cairo', 'Lagos'],
-      'Middle East': ['Middle East', 'Dubai', 'Saudi', 'Iran', 'Israel', 'Qatar', 'UAE', 'Tel Aviv'],
-      'Central Asia': ['Kazakhstan', 'Uzbekistan', 'Turkmenistan', 'Kyrgyzstan', 'Tajikistan', 'Almaty', 'Tashkent'],
-      'East Asia': ['China', 'Japan', 'Korea', 'Tokyo', 'Beijing', 'Seoul'],
-      'South Asia': ['India', 'Pakistan', 'Bangladesh', 'Delhi', 'Mumbai'],
-      'Southeast Asia': ['Thailand', 'Vietnam', 'Singapore', 'Malaysia', 'Philippines', 'Bangkok'],
-      'Oceania': ['Australia', 'New Zealand', 'Sydney', 'Melbourne', 'Auckland']
+      'North America': ['USA', 'United States', 'Canada', 'Mexico', 'NY', 'California', 'Florida', 'Toronto', 'Vancouver'],
+      'South America': ['Brazil', 'Argentina', 'Chile', 'Peru', 'Colombia', 'Caribbean', 'Jamaica', 'Bahamas', 'Latin America'],
+      'Europe': ['UK', 'London', 'France', 'Paris', 'Germany', 'Italy', 'Spain', 'Europe', 'Greece', 'Amsterdam', 'Britain', 'Ireland'],
+      'Asia': ['China', 'Japan', 'Korea', 'Thailand', 'Vietnam', 'Singapore', 'India', 'Bali', 'Tokyo', 'Bangkok', 'Asia', 'South Asia', 'Southeast Asia'],
+      'Middle East': ['Dubai', 'UAE', 'Saudi', 'Qatar', 'Israel', 'Turkey', 'Jordan', 'Egypt', 'Middle East'],
+      'Africa': ['Africa', 'South Africa', 'Kenya', 'Morocco', 'Nigeria', 'Tanzania', 'Nairobi', 'Cairo'],
+      'Oceania': ['Australia', 'Sydney', 'New Zealand', 'Fiji', 'Pacific', 'Melbourne', 'Auckland', 'Oceania']
     };
 
     const detectRegion = (title, desc) => {
@@ -179,13 +171,14 @@ const fetchAndSaveNews = async () => {
       for (const q of queries) {
         try {
           const gNewsRes = await axios.get(`https://gnews.io/api/v4/search?q=${q}&token=${process.env.NEWS_API_KEY}&lang=en&max=20`);
+          const regionFromQuery = queries.find(query => q === query && query.startsWith('travel '))?.replace('travel ', '');
           const gNewsArticles = gNewsRes.data.articles.map(item => ({
             title: item.title,
             url: item.url,
             description: item.description,
             source: item.source.name,
             category: q.includes('flight') ? 'flights' : q.includes('hotel') ? 'hotels' : q.includes('cruise') ? 'cruises' : 'travel-news',
-            region: detectRegion(item.title, item.description),
+            region: regionFromQuery || detectRegion(item.title, item.description),
             image: item.image || `https://picsum.photos/seed/${encodeURIComponent(item.title)}/800/400`,
             publishedAt: new Date(item.publishedAt).toISOString(),
             trending: Math.random() > 0.8

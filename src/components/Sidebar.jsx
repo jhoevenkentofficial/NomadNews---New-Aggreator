@@ -6,10 +6,8 @@ import { RefreshCw } from 'lucide-react';
 import './Sidebar.css';
 
 const REGIONS = [
-  'North America', 'Central America', 'Caribbean', 'South America',
-  'U.K. & Ireland', 'Western Europe', 'Eastern Europe', 'Africa',
-  'Middle East', 'Central Asia', 'East Asia', 'South Asia',
-  'Southeast Asia', 'Oceania'
+  'North America', 'South America', 'Europe', 'Asia',
+  'Africa', 'Middle East', 'Oceania'
 ];
 
 const Sidebar = () => {

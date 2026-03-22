@@ -5,7 +5,7 @@ import './Navbar.css';
 
 const Navbar = () => {
   const categories = [
-    'Travel News', 'Destinations', 'Flights', 'Hotels', 'Tips'
+    'Travel News', 'Destinations', 'Flights', 'Hotels', 'Tips', 'Thailand'
   ];
 
   const regions = [
