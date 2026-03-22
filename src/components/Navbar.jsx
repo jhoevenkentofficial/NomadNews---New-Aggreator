@@ -111,7 +111,7 @@ const Navbar = () => {
               {categories.map(cat => (
                 <li key={cat}>
                   <Link 
-                    to={`/category/${cat.toLowerCase().replace(/\\s+/g, '-')}`} 
+                    to={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`} 
                     onClick={() => setMenuOpen(false)}
                   >
                     {cat}
@@ -161,7 +161,7 @@ const Navbar = () => {
             {categories.map(cat => (
               <Link
                 key={cat}
-                to={`/category/${cat.toLowerCase().replace(/\\s+/g, '-')}`}
+                to={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`}
                 className="mobile-category-chip"
                 onClick={() => setMenuOpen(false)}
               >
