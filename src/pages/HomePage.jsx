@@ -8,6 +8,7 @@ import './HomePage.css';
 const HomePage = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -16,11 +17,16 @@ const HomePage = () => {
       try {
         setLoading(true);
         const res = await axios.get(`${API_URL}/latest?page=${currentPage}&limit=18`);
-        setNews(res.data.articles);
-        setTotalPages(res.data.pagination.totalPages);
+        if (res.data && res.data.articles) {
+          setNews(res.data.articles);
+          setTotalPages(res.data.pagination?.totalPages || 1);
+        } else {
+          setNews([]);
+          setError("Malformed response from server");
+        }
       } catch (error) {
         console.error('Error fetching latest news:', error);
-        // Optionally, you could add an error state here if you want to display an error message
+        setError(error.message);
       } finally {
         setLoading(false);
       }
