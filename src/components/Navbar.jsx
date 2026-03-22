@@ -5,12 +5,12 @@ import './Navbar.css';
 
 const Navbar = () => {
   const categories = [
-    'Travel News', 'Destinations', 'Flights', 'Hotels', 'Cruises', 'Tips'
+    'Travel News', 'Destinations', 'Flights', 'Hotels', 'Tips'
   ];
 
   const regions = [
-    'North America', 'Western Europe', 'East Asia', 'Southeast Asia',
-    'South Asia', 'Africa', 'Middle East', 'Oceania'
+    'North America', 'South America', 'Europe', 'Asia',
+    'Africa', 'Middle East', 'Oceania'
   ];
 
   const [menuOpen, setMenuOpen] = useState(false);

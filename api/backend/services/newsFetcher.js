@@ -14,23 +14,39 @@ const fetchAndSaveNews = async () => {
       // --- REGIONAL TRAVEL ---
       // North America
       { url: 'https://www.travelweekly.com/RSS/News', category: 'travel-news', region: 'North America' },
-      
+      { url: 'https://skift.com/feed/', category: 'travel-news', region: 'North America' }, // Heavy US focus
+      { url: 'https://www.travelpulse.com/rss/news.rss', category: 'travel-news', region: 'North America' },
+      { url: 'https://paxnews.com/rss', category: 'travel-news', region: 'North America' },
+
       // Europe
       { url: 'https://www.travelweekly.co.uk/rss/news', category: 'travel-news', region: 'Western Europe' },
       { url: 'https://www.schengenvisainfo.com/news/feed/', category: 'travel-news', region: 'Western Europe' },
-      
+      { url: 'https://www.ttgmedia.com/rss/news', category: 'travel-news', region: 'Western Europe' },
+      { url: 'https://emerging-europe.com/category/news/feed/', category: 'travel-news', region: 'Eastern Europe' },
+
       // Asia
       { url: 'https://www.traveldailymedia.com/category/asia/feed/', category: 'travel-news', region: 'South Asia' },
       { url: 'https://thethaiger.com/category/travel/feed', category: 'destinations', region: 'Southeast Asia' },
-      
+      { url: 'https://ttgasia.com/feed/', category: 'travel-news', region: 'Southeast Asia' },
+      { url: 'https://www.webintravel.com/feed/', category: 'travel-news', region: 'East Asia' },
+
       // Africa
       { url: 'https://www.africantravelcanvas.com/feed/', category: 'tips', region: 'Africa' },
-      
+      { url: 'https://www.tourismupdate.co.za/rss.xml', category: 'travel-news', region: 'Africa' },
+      { url: 'https://travelnews.africa/feed/', category: 'travel-news', region: 'Africa' },
+      { url: 'https://www.getaway.co.za/feed/', category: 'destinations', region: 'Africa' },
+
       // Middle East
       { url: 'https://gulfbusiness.com/industry/tourism/feed/', category: 'travel-news', region: 'Middle East' },
-      
+      { url: 'https://www.hoteliermiddleeast.com/feed', category: 'hotels', region: 'Middle East' },
+      { url: 'https://www.arabianbusiness.com/industries/travel-hospitality/feed', category: 'travel-news', region: 'Middle East' },
+      { url: 'https://ttgmena.com/feed/', category: 'travel-news', region: 'Middle East' },
+
       // Oceania
       { url: 'https://www.travelweekly.com.au/feed/', category: 'travel-news', region: 'Oceania' },
+      { url: 'https://karryon.com.au/feed/', category: 'travel-news', region: 'Oceania' },
+      { url: 'https://www.traveltalkmag.com.au/feed/', category: 'destinations', region: 'Oceania' },
+      { url: 'https://latte.travel/feed/', category: 'travel-news', region: 'Oceania' },
 
       // --- NICHES ---
       // Flights
