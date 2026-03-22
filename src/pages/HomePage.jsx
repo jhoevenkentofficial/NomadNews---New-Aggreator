@@ -52,10 +52,16 @@ const HomePage = () => {
 
   return (
     <div className="homepage-news">
+      {error && (
+        <div style={{ padding: '1rem', backgroundColor: '#fee2e2', color: '#b91c1c', marginBottom: '1rem', borderRadius: '0.5rem' }}>
+          <strong>Debug Error:</strong> {error}
+        </div>
+      )}
+
       {heroArticle ? (
         <NewsCard article={heroArticle} isHero={true} />
-      ) : (
-        <div className="no-news">No travel news available currently.</div>
+      ) : !loading && (
+        <div className="no-news">No travel news available currently. Total in DB: {news.length}</div>
       )}
 
       <div className="news-list">
