@@ -6,29 +6,40 @@ const parser = new Parser();
 const fetchAndSaveNews = async () => {
   try {
     const feeds = [
-      // Travel Industry & News
+      // --- GLOBAL PRIMARY ---
       { url: 'https://skift.com/feed/', category: 'travel-news', region: 'Global' },
       { url: 'https://www.travelpulse.com/rss/news.rss', category: 'travel-news', region: 'Global' },
       { url: 'https://www.cntraveler.com/feed/rss', category: 'destinations', region: 'Global' },
-      { url: 'https://www.traveldailymedia.com/feed/', category: 'travel-news', region: 'Global' },
       
-      // Flights & Aviation
+      // --- REGIONAL TRAVEL ---
+      // North America
+      { url: 'https://www.travelweekly.com/RSS/News', category: 'travel-news', region: 'North America' },
+      
+      // Europe
+      { url: 'https://www.travelweekly.co.uk/rss/news', category: 'travel-news', region: 'Western Europe' },
+      { url: 'https://www.schengenvisainfo.com/news/feed/', category: 'travel-news', region: 'Western Europe' },
+      
+      // Asia
+      { url: 'https://www.traveldailymedia.com/category/asia/feed/', category: 'travel-news', region: 'South Asia' },
+      { url: 'https://thethaiger.com/category/travel/feed', category: 'destinations', region: 'Southeast Asia' },
+      
+      // Africa
+      { url: 'https://www.africantravelcanvas.com/feed/', category: 'tips', region: 'Africa' },
+      
+      // Middle East
+      { url: 'https://gulfbusiness.com/industry/tourism/feed/', category: 'travel-news', region: 'Middle East' },
+      
+      // Oceania
+      { url: 'https://www.travelweekly.com.au/feed/', category: 'travel-news', region: 'Oceania' },
+
+      // --- NICHES ---
+      // Flights
       { url: 'https://simpleflying.com/feed/', category: 'flights', region: 'Global' },
       { url: 'https://onemileatatime.com/feed/', category: 'flights', region: 'Global' },
-      
-      // Hotels & Resorts
+      // Hotels
       { url: 'https://www.hotelmanagement.net/rss.xml', category: 'hotels', region: 'Global' },
-      { url: 'https://www.boutiquehotelnews.com/feed/', category: 'hotels', region: 'Global' },
-      
       // Cruises
-      { url: 'https://www.cruisecritic.com/rss/news', category: 'cruises', region: 'Global' },
-      { url: 'https://porthole.com/feed/', category: 'cruises', region: 'Global' },
-      
-      // Regional Travel (Examples)
-      { url: 'https://www.lonelyplanet.com/news/feed', category: 'destinations', region: 'Global' },
-      { url: 'https://thethaiger.com/category/travel/feed', category: 'destinations', region: 'Southeast Asia' },
-      { url: 'https://www.nomadicmatt.com/travel-blogs/feed/', category: 'tips', region: 'Global' },
-      { url: 'https://thepointsguy.com/feed/', category: 'tips', region: 'Global' }
+      { url: 'https://www.cruisecritic.com/rss/news', category: 'cruises', region: 'Global' }
     ];
 
     const regionKeywords = {
@@ -136,7 +147,19 @@ const fetchAndSaveNews = async () => {
 
     // GNews API
     if (process.env.NEWS_API_KEY) {
-      const queries = ['travel', 'tourism', 'airlines', 'cruises', 'hotels', 'attractions'];
+      const queries = [
+        'travel North America', 
+        'travel Europe', 
+        'travel Asia', 
+        'travel Africa', 
+        'travel South America', 
+        'travel Middle East', 
+        'travel Oceania',
+        'flights airlines', 
+        'tourism destinations', 
+        'hotels resorts', 
+        'cruises'
+      ];
       for (const q of queries) {
         try {
           const gNewsRes = await axios.get(`https://gnews.io/api/v4/search?q=${q}&token=${process.env.NEWS_API_KEY}&lang=en&max=20`);
@@ -145,7 +168,7 @@ const fetchAndSaveNews = async () => {
             url: item.url,
             description: item.description,
             source: item.source.name,
-            category: q.toLowerCase(),
+            category: q.includes('flight') ? 'flights' : q.includes('hotel') ? 'hotels' : q.includes('cruise') ? 'cruises' : 'travel-news',
             region: detectRegion(item.title, item.description),
             image: item.image || `https://picsum.photos/seed/${encodeURIComponent(item.title)}/800/400`,
             publishedAt: new Date(item.publishedAt).toISOString(),
