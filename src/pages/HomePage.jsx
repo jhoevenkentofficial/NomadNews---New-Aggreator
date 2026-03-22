@@ -28,7 +28,9 @@ const HomePage = () => {
         }
       } catch (error) {
         console.error('Error fetching latest news:', error);
-        setError(error.message);
+        // Show the actual error message from backend if available
+        const msg = error.response?.data?.error || error.message;
+        setError(msg);
       } finally {
         setLoading(false);
       }
