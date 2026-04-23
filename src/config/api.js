@@ -9,8 +9,8 @@ const getBaseUrl = () => {
     return 'http://localhost:5000/api/news';
   }
   
-  // Default to relative path for unified hosting (Vercel)
-  const url = '/api/news';
+  // Default to PHP backend for GoDaddy Shared Hosting
+  const url = '/api/php';
   console.log('API_URL initialized as:', url);
   if (typeof window !== 'undefined') {
     window.API_DEBUG = { url, origin: window.location.origin };

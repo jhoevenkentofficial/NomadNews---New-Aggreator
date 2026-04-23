@@ -2,30 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../config/api';
-import NewsCard from '../components/NewsCard';
-import Pagination from '../components/Pagination';
-import './HomePage.css';
+import WireDashboard from '../components/WireDashboard';
 
 const RegionPage = () => {
   const { regionName } = useParams();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  // Reset page when region changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [regionName]);
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${API_URL}/region/${encodeURIComponent(regionName)}?page=${currentPage}&limit=18`);
+        // High density fetch
+        const res = await axios.get(`${API_URL}/region/${encodeURIComponent(regionName)}?limit=60`);
         setArticles(res.data.articles);
-        setTotalPages(res.data.pagination.totalPages);
       } catch (err) {
         console.error('Error fetching region news:', err);
         setError(`Unable to load news for ${decodeURIComponent(regionName)}.`);
@@ -36,53 +27,14 @@ const RegionPage = () => {
 
     fetchNews();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [regionName, currentPage]);
+  }, [regionName]);
 
   const decodedRegion = decodeURIComponent(regionName);
 
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <div className="loader"></div>
-      </div>
-    );
-  }
+  if (loading) return <div className="loader-container"><div className="loader"></div></div>;
+  if (error) return <div className="error-state"><h2>Error</h2><p>{error}</p></div>;
 
-  if (error) {
-    return (
-      <div className="error-state">
-        <h2>System Notification</h2>
-        <p>{error}</p>
-        <button onClick={() => window.location.reload()} className="btn-retry">Try Again</button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="region-page">
-      <header className="page-header">
-        <h2 className="section-title">{decodedRegion}</h2>
-      </header>
-
-      {articles.length === 0 ? (
-        <div className="no-news">No travel news found for {decodedRegion} currently.</div>
-      ) : (
-        <>
-          <div className="news-list">
-            {articles.map((article) => (
-              <NewsCard key={article._id || article.url} article={article} />
-            ))}
-          </div>
-          
-          <Pagination 
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </>
-      )}
-    </div>
-  );
+  return <WireDashboard news={articles} title={decodedRegion} />;
 };
 
 export default RegionPage;

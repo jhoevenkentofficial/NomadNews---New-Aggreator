@@ -36,10 +36,29 @@ const initDB = async () => {
         region TEXT,
         image TEXT,
         published_at DATETIME,
+        author TEXT,
+        city TEXT,
+        is_breaking BOOLEAN DEFAULT 0,
         trending BOOLEAN DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // Schema Migration: Add missing columns if table already existed
+    const migrationColumns = [
+      { name: 'author', type: 'TEXT' },
+      { name: 'city', type: 'TEXT' },
+      { name: 'is_breaking', type: 'BOOLEAN DEFAULT 0' }
+    ];
+
+    for (const col of migrationColumns) {
+      try {
+        await client.execute(`ALTER TABLE articles ADD COLUMN ${col.name} ${col.type}`);
+        console.log(`Migration: Added column ${col.name} to articles table.`);
+      } catch (e) {
+        // Catch error if column already exists
+      }
+    }
     
     // Create necessary indexes
     await client.execute(`CREATE INDEX IF NOT EXISTS idx_articles_category ON articles(category)`);

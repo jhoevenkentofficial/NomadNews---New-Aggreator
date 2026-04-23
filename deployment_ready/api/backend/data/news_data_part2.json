@@ -1,0 +1,122 @@
+[
+  {
+    "title": "Paris Olympics 2024 Legacy: New 100km Bike Path Network Complete",
+    "description": "City of Light officially opens 'Vélopoly', connecting all major landmarks via dedicated cycling lanes.",
+    "content": "The Parisian government has completed its ambitious legacy project, a 100km high-speed cycling network that allows tourists and locals to traverse the city safely.",
+    "url": "https://example.nz/paris-velopoly-2026",
+    "image": "https://images.unsplash.com/photo-1543349689-9a4d426bee8e?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-18T19:00:00Z",
+    "source": { "name": "Le Monde Travel", "url": "https://lemonde.fr" },
+    "region": "Western Europe",
+    "category": "Lifestyle",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Berlin's Tempelhof Park: World's Largest Urban Green Energy Hub",
+    "description": "The former airport now generates enough solar power for 50,000 homes while hosting festivals.",
+    "content": "Tempelhof Field in Berlin has transitioned from a historic airport into a massive solar park that remains a beloved public space for recreation.",
+    "url": "https://example.nz/berlin-tempelhof-solar",
+    "image": "https://images.unsplash.com/photo-1544013589-447e20ce53a1?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-18T20:00:00Z",
+    "source": { "name": "Berlin Spectator", "url": "https://berlinspectator.com" },
+    "region": "Western Europe",
+    "category": "Business",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Poland's Baltic Coast Emerges as a New 'Riviera'",
+    "description": "Gdańsk and Sopot see record bookings for Summer 2026 as travelers seek cooler northern beaches.",
+    "content": "Poland's northern coast is experiencing a tourism boom, with its pristine sandy beaches and historical architecture attracting visitors from all over Europe.",
+    "url": "https://example.nz/poland-baltic-riviera",
+    "image": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-18T21:00:00Z",
+    "source": { "name": "Travel Poland", "url": "https://travelpoland.org" },
+    "region": "Eastern Europe",
+    "category": "Travel",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Prague to Limit Night Cruises for Sound Pollution",
+    "description": "Vltava river authorities implement 'Silent Evenings' starting July 2026.",
+    "content": "Prague is taking measures to protect the historical atmosphere of its riverfront by restricting loud music on river cruises after 9 PM.",
+    "url": "https://example.nz/prague-silent-evenings",
+    "image": "https://images.unsplash.com/photo-1541447271487-09612b3f3d7a?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-18T22:00:00Z",
+    "source": { "name": "Prague Post", "url": "https://praguepost.com" },
+    "region": "Eastern Europe",
+    "category": "Opinion",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Kenya's New Standard Gauge Railway Connects Safaris to the Coast",
+    "description": "Travelers can now reach Tsavo National Park from Nairobi in under 3 hours via luxury rail.",
+    "content": "Kenya's infrastructure upgrades are making it easier for tourists to combine safari experiences with coastal relaxation in one trip.",
+    "url": "https://example.nz/kenya-luxury-rail",
+    "image": "https://images.unsplash.com/photo-1516422317920-3df73b1b960a?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-18T23:00:00Z",
+    "source": { "name": "Africa Travel Insight", "url": "https://africainsight.com" },
+    "region": "Africa",
+    "category": "Travel",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Morocco's 'Blue City' Chefchaouen to Limit Daily Visitors",
+    "description": "New sustainable tourism cap aims to preserve the authenticity of the Rif mountain gem.",
+    "content": "Chefchaouen is following in the footsteps of Venice by implementing a daily visitor cap to manage the impact of social-media-driven tourism.",
+    "url": "https://example.nz/chefchaouen-visitor-cap",
+    "image": "https://images.unsplash.com/photo-1548690312-e3b507d17a4d?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T00:00:00Z",
+    "source": { "name": "Moroccan News", "url": "https://morocconews.com" },
+    "region": "Africa",
+    "category": "Travel",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Dubai Reefs: World's Largest Coral Restoration Project Surpasses Milestone",
+    "description": "Over 1 million coral fragments successfully planted off the Jumeirah coast.",
+    "content": "Dubai's commitment to marine biodiversity has reached a significant milestone with its massive reef-building project showing high survival rates.",
+    "url": "https://example.nz/dubai-reefs-2026",
+    "image": "https://images.unsplash.com/photo-1542296332-2e4473faf563?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T01:00:00Z",
+    "source": { "name": "Dubai Eye", "url": "https://dubaieye.com" },
+    "region": "Middle East",
+    "category": "World",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "NEOM's Trojena: First Ski Season Announced for 2026",
+    "description": "Saudi Arabia prepares to host its first-ever outdoor mountain skiing experience.",
+    "content": "Saudi Arabia's NEOM project is nearing a major opening as the mountain resort of Trojena prepares for its inaugural winter activities.",
+    "url": "https://example.nz/neom-trojena-ski",
+    "image": "https://images.unsplash.com/photo-1544473244-f689000d6553?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T02:00:00Z",
+    "source": { "name": "NEOM News", "url": "https://neom.com" },
+    "region": "Middle East",
+    "category": "Travel",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Kazakhstan to Launch High-Altitude Silk Road Rail Tours",
+    "description": "New luxury carriages will traverse the Almaty mountains connecting with China.",
+    "content": "Kazakhstan is modernizing the historic Silk Road with new high-speed luxury trains that offer breathtaking panoramic views of the Tien Shan mountains.",
+    "url": "https://example.nz/silk-road-rail",
+    "image": "https://images.unsplash.com/photo-1548681528-6a5c45b66b42?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T03:00:00Z",
+    "source": { "name": "Central Asia Today", "url": "https://catoday.com" },
+    "region": "Central Asia",
+    "category": "Travel",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Uzbekistan's Samarkand: Registan Square Restored to Pre-Soviet Glory",
+    "description": "Decade-long restoration project for the historic Madrasas finally complete.",
+    "content": "Samarkand's iconic Registan Square has been fully restored using traditional techniques, making it the premier spiritual destination in Central Asia.",
+    "url": "https://example.nz/samarkand-restoration",
+    "image": "https://images.unsplash.com/photo-1545129139-1beb780cf717?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T04:00:00Z",
+    "source": { "name": "History Traveler", "url": "https://historytraveler.org" },
+    "region": "Central Asia",
+    "category": "Video",
+    "createdAt": "2026-03-18T21:00:00Z"
+  }
+]

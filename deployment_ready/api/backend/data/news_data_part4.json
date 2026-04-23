@@ -1,0 +1,86 @@
+[
+  {
+    "title": "Digital Nomadism in 2026: The Year of the 'Slow Traveler'",
+    "description": "Trend reports show a massive shift towards staying in one location for 3-6 months.",
+    "content": "The travel industry is adapting to the 'Slow Travel' movement, with many hotels now offering monthly subscription models for digital nomads.",
+    "url": "https://example.nz/slow-travel-2026",
+    "image": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T13:00:00Z",
+    "source": { "name": "Nomad List", "url": "https://nomadlist.com" },
+    "region": "Global",
+    "category": "Lifestyle",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Airline Industry Forecast: Supersonic Travel Returns to the Mainstream",
+    "description": "New quiet-boom technology allows for overland supersonic flights between major hubs.",
+    "content": "Several major airlines have announced plans to reintroduce supersonic routes in late 2026, promising London to New York in under 3 hours.",
+    "url": "https://example.nz/supersonic-2026",
+    "image": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T14:00:00Z",
+    "source": { "name": "Aviation Week", "url": "https://aviationweek.com" },
+    "region": "Global",
+    "category": "Business",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Opinion: Is Virtual Reality Killing the Desire for Real-World Travel?",
+    "description": "A deep dive into how high-fidelity VR experiences are impacting destination tourism.",
+    "content": "As VR becomes more immersive, some analysts worry that travelers might opt for digital vacations instead of physical ones.",
+    "url": "https://example.nz/vr-vs-travel-opinion",
+    "image": "https://images.unsplash.com/photo-1478416272538-5f7e51dc5400?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T15:00:00Z",
+    "source": { "name": "The Economist", "url": "https://economist.com" },
+    "region": "Global",
+    "category": "Opinion",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Video: The Last Unexplored Corners of the Earth",
+    "description": "A stunning documentary series focusing on deep-sea and sub-glacial exploration.",
+    "content": "Take a visual journey to the most remote locations on the planet, from the Mariana Trench to the Antarctic interior.",
+    "url": "https://example.nz/unexplored-corners-video",
+    "image": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T16:00:00Z",
+    "source": { "name": "Discovery", "url": "https://discovery.com" },
+    "region": "Global",
+    "category": "Video",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Travel Tips: How to Secure a 'Global Citizen' Visa in 2026",
+    "description": "A comprehensive guide to the fastest-growing remote work visa programs worldwide.",
+    "content": "Our updated guide for 2026 covers all the new countries offering special visas for remote workers and digital nomads.",
+    "url": "https://example.nz/global-citizen-visa-tips",
+    "image": "https://images.unsplash.com/photo-1543167664-40d1ae0e586c?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T17:00:00Z",
+    "source": { "name": "Nomad News", "url": "https://nomadnews.com" },
+    "region": "Global",
+    "category": "Travel",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "Thailand's Northern Trails: Chiang Mai's Sustainable Hiking Network",
+    "description": "New community-led tourism initiative focuses on protecting hill tribe cultures.",
+    "content": "Chiang Mai is launching a new network of hiking trails that are managed by local villagers, ensuring tourism revenue stays in the community.",
+    "url": "https://example.nz/chiang-mai-trails",
+    "image": "https://images.unsplash.com/photo-1528181304800-2f1408198f2f?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T18:00:00Z",
+    "source": { "name": "Bangkok Post", "url": "https://bangkokpost.com" },
+    "region": "Southeast Asia",
+    "category": "Thailand",
+    "createdAt": "2026-03-18T21:00:00Z"
+  },
+  {
+    "title": "World Travel Expo 2026: Sustainable Aviation Fuels Take Center Stage",
+    "description": "Major aerospace companies pledge to phase out fossil fuels for short-haul flights by 2035.",
+    "content": "At the latest World Travel Expo, the focus was firmly on the future of green flight, with hydrogen-powered planes stealing the show.",
+    "url": "https://example.nz/travel-expo-2026",
+    "image": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop",
+    "publishedAt": "2026-03-19T19:00:00Z",
+    "source": { "name": "Travel Insider", "url": "https://travelinsider.com" },
+    "region": "Global",
+    "category": "World",
+    "createdAt": "2026-03-18T21:00:00Z"
+  }
+]

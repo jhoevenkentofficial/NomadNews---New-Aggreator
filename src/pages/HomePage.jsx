@@ -1,84 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config/api';
-import NewsCard from '../components/NewsCard';
-import Pagination from '../components/Pagination';
-import './HomePage.css';
+import WireDashboard from '../components/WireDashboard';
 
 const HomePage = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const fetchLatestNews = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${API_URL}/latest?page=${currentPage}&limit=18`);
-        console.log('API Response for /latest:', res.data);
+        const res = await axios.get(`${API_URL}/latest?limit=60`);
         if (res.data && res.data.articles) {
           setNews(res.data.articles);
-          console.log(`Successfully set ${res.data.articles.length} articles`);
-          setTotalPages(res.data.pagination?.totalPages || 1);
-        } else {
-          setNews([]);
-          setError("Malformed response from server");
         }
       } catch (error) {
-        console.error('Error fetching latest news:', error);
-        // Show the actual error message from backend if available
-        const msg = error.response?.data?.error || error.message;
-        setError(msg);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
     };
-
     fetchLatestNews();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentPage]);
+  }, []);
 
-  const heroArticle = news.length > 0 ? news[0] : null;
-  const listArticles = news.length > 1 ? news.slice(1) : [];
-
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <div className="loader"></div>
-      </div>
-    );
-  }
-
-
-  return (
-    <div className="homepage-news">
-      {error && (
-        <div style={{ padding: '1rem', backgroundColor: '#fee2e2', color: '#b91c1c', marginBottom: '1rem', borderRadius: '0.5rem' }}>
-          <strong>Debug Error:</strong> {error}
-        </div>
-      )}
-
-      {heroArticle ? (
-        <NewsCard article={heroArticle} isHero={true} />
-      ) : !loading && (
-        <div className="no-news">No travel news available currently. Total in DB: {news.length}</div>
-      )}
-
-      <div className="news-list">
-        {listArticles.map((article) => (
-          <NewsCard key={article._id || article.url} article={article} />
-        ))}
-      </div>
-
-      <Pagination 
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
-    </div>
-  );
+  if (loading) return <div className="loader-container"><div className="loader"></div></div>;
+  if (error) return <div className="error-state"><h2>Error Loading News</h2><p>{error}</p></div>;
+  
+  return <WireDashboard news={news} />;
 };
 
 export default HomePage;

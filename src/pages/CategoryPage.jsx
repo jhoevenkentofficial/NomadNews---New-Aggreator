@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../config/api';
-import NewsCard from '../components/NewsCard';
-import Pagination from '../components/Pagination';
+import WireDashboard from '../components/WireDashboard';
 import './CategoryPage.css';
 
 const CategoryPage = () => {
@@ -11,22 +10,13 @@ const CategoryPage = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  // Reset page to 1 when category changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [categoryName]);
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        
-        const res = await axios.get(`${API_URL}/category/${encodeURIComponent(categoryName)}?page=${currentPage}&limit=18`);
+        const res = await axios.get(`${API_URL}/category/${encodeURIComponent(categoryName)}?limit=60`);
         setArticles(res.data.articles);
-        setTotalPages(res.data.pagination.totalPages);
       } catch (err) {
         console.error('Error fetching category news:', err);
         setError(`Unable to load news for ${categoryName}.`);
@@ -37,9 +27,25 @@ const CategoryPage = () => {
 
     fetchNews();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [categoryName, currentPage]);
+  }, [categoryName]);
 
-  const displayTitle = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
+  const displayTitle = (categoryName || '')
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+  const majorCitiesList = [
+    'Paris', 'London', 'Bangkok', 'Dubai', 'Singapore', 'New York City', 'Istanbul', 'Tokyo', 'Kuala Lumpur', 'Hong Kong',
+    'Rome', 'Barcelona', 'Amsterdam', 'Madrid', 'Berlin', 'Vienna', 'Prague', 'Budapest', 'Lisbon', 'Athens', 'Milan',
+    'Florence', 'Venice', 'Munich', 'Copenhagen', 'Stockholm', 'Dublin', 'Edinburgh', 'Brussels', 'Zurich', 'Geneva',
+    'Oslo', 'Helsinki', 'Reykjavik', 'Moscow', 'St. Petersburg', 'Warsaw', 'Krakow', 'Tallinn', 'Riga', 'Beijing',
+    'Shanghai', 'Seoul', 'Osaka', 'Kyoto', 'Taipei', 'Hanoi', 'Ho Chi Minh City', 'Bali (Denpasar)', 'Jakarta', 'Phuket',
+    'Chiang Mai', 'Manila', 'Cebu', 'Phnom Penh', 'Siem Reap', 'Yangon', 'Colombo', 'Male', 'Kathmandu', 'Sydney',
+    'Melbourne', 'Brisbane', 'Auckland', 'Queenstown', 'Los Angeles', 'Las Vegas', 'San Francisco', 'Miami', 'Orlando',
+    'Chicago', 'Toronto', 'Vancouver', 'Montreal', 'Mexico City', 'Cancun', 'Havana', 'San Jose (Costa Rica)', 'Panama City', 'Lima',
+    'Cusco', 'Rio de Janeiro', 'Sao Paulo', 'Buenos Aires', 'Santiago', 'Bogota', 'Cartagena', 'Cape Town', 'Johannesburg',
+    'Marrakech', 'Cairo', 'Luxor', 'Nairobi', 'Zanzibar City', 'Addis Ababa', 'Tel Aviv', 'Jerusalem', 'Doha', 'Abu Dhabi', 'Mecca'
+  ];
 
   if (loading) {
     return (
@@ -61,27 +67,26 @@ const CategoryPage = () => {
 
   return (
     <div className="category-page">
-      <header className="page-header">
-        <h2 className="section-title">{displayTitle}</h2>
-      </header>
-
-      {articles.length === 0 ? (
-        <div className="no-news">No news found for {displayTitle} currently.</div>
-      ) : (
-        <>
-          <div className="news-list">
-            {articles.map((article) => (
-              <NewsCard key={article._id || article.url} article={article} />
+      {categoryName === 'major-cities' && (
+        <div className="city-explorer">
+          <h3>Featured Travel Hubs</h3>
+          <p className="city-subtitle">Browse the world's most sought-after destinations from our primary source network.</p>
+          <div className="city-grid">
+            {majorCitiesList.map(city => (
+              <a 
+                key={city} 
+                href={`/search?q=${encodeURIComponent(city)}`}
+                className="city-chip"
+              >
+                {city}
+              </a>
             ))}
           </div>
-          
-          <Pagination 
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </>
+          <div className="city-divider"></div>
+        </div>
       )}
+
+      <WireDashboard news={articles} title={displayTitle} />
     </div>
   );
 };

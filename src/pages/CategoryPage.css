@@ -11,8 +11,67 @@
 .section-title {
   font-family: 'Playfair Display', serif;
   font-size: 2.5rem;
-  color: var(--primary);
+  color: #fff;
   text-transform: capitalize;
+}
+
+.city-explorer {
+    margin-bottom: 3rem;
+    padding: 2.5rem;
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+.city-explorer h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #000;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.city-subtitle {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.city-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.5rem;
+}
+
+.city-chip {
+    padding: 0.6rem 0.8rem;
+    background: #fff;
+    border: 1px solid #eee;
+    color: #333;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    transition: all 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.city-chip:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.city-divider {
+    margin-top: 3rem;
+    height: 2px;
+    background: #000;
 }
 
 .news-list {

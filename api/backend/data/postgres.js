@@ -44,6 +44,9 @@ const initDB = async () => {
         region VARCHAR(100),
         image TEXT,
         published_at TIMESTAMP WITH TIME ZONE,
+        author TEXT,
+        city TEXT,
+        is_breaking BOOLEAN DEFAULT FALSE,
         trending BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       )

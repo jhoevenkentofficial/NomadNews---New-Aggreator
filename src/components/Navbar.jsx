@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Search, Menu, X } from 'lucide-react';
+import { Search, Menu, X, Landmark, Plane, Hotel, Globe, Flame, MapPin } from 'lucide-react';
 import './Navbar.css';
 
 const Navbar = () => {
   const categories = [
-    'Travel News', 'Destinations', 'Flights', 'Hotels', 'Tips', 'Thailand'
+    'Breaking News', 'Airport News', 'Popular Destinations', 'Major Cities', 'Travel News'
   ];
 
   const regions = [
-    'North America', 'South America', 'Europe', 'Asia',
-    'Africa', 'Middle East', 'Oceania'
+    'North America', 'Europe', 'Middle East', 'Asia', 'South America', 'Africa', 'Oceania'
   ];
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -47,6 +46,16 @@ const Navbar = () => {
     }
   };
 
+  const getCategoryIcon = (cat) => {
+    switch (cat) {
+      case 'Breaking News': return <Flame size={16} />;
+      case 'Airport News': return <Plane size={16} />;
+      case 'Popular Destinations': return <MapPin size={16} />;
+      case 'Major Cities': return <Landmark size={16} />;
+      default: return <Globe size={16} />;
+    }
+  };
+
   return (
     <>
       <nav className="navbar">
@@ -57,7 +66,7 @@ const Navbar = () => {
             </div>
             <div className="nav-links">
               <Link to="/" className="nav-link">Home</Link>
-              <Link to="/admin" className="nav-link login-link">Login</Link>
+              <Link to="/admin" className="nav-link login-link">Admin Login</Link>
             </div>
           </div>
         </div>
@@ -69,14 +78,11 @@ const Navbar = () => {
             </button>
             <Link to="/" className="navbar-brand-centered">
               <div className="logo-wrapper">
-                <img src="/assets/images/logo.png" alt="TravelTew News" className="navbar-logo-img" />
+                <img src="/assets/images/logo.png" alt="TRAVELTEW NEWS" className="navbar-logo-img" />
               </div>
               <div className="navbar-logo-text">
-                <div className="brand-primary">
-                  <h1>TRAVEL<span>TEW</span></h1>
-                  <span className="news-tag">News</span>
-                </div>
-                <p className="brand-tagline">Your Global Travel Companion</p>
+                <h1 className="brand-name">TRAVELTEW<span>NEWS</span></h1>
+                <p className="brand-tagline">Your #1 Travel News Source Worldwide</p>
               </div>
             </Link>
             <div className="middle-right">
@@ -113,88 +119,83 @@ const Navbar = () => {
                   <Link 
                     to={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`} 
                     onClick={() => setMenuOpen(false)}
+                    className="nav-cat-link"
                   >
-                    {cat}
+                    {getCategoryIcon(cat)}
+                    <span>{cat}</span>
                   </Link>
                 </li>
               ))}
+              <li className="nav-dropdown-item">
+                <span className="nav-cat-link">
+                  <Globe size={16} />
+                  <span>Regions</span>
+                </span>
+                <ul className="dropdown-menu">
+                  {regions.map(region => (
+                    <li key={region}>
+                      <Link to={`/region/${encodeURIComponent(region)}`}>{region}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
             </ul>
           </div>
         </div>
       </nav>
 
-      {/* Rich Mobile Slide-Out Menu */}
+      {/* Simplified Mobile Slide-Out Menu */}
       <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
-        {/* Header */}
         <div className="mobile-menu-header">
-          <div>
-            <div className="mobile-logo-container">
-              <img src="/assets/images/logo.png" alt="" className="mobile-logo-img" />
-              <h2 className="mobile-logo">TRAVEL<span>TEW</span> News</h2>
-            </div>
-            <p className="mobile-tagline">Exploring the world, one story at a time.</p>
-            <NavLink to="/category/travel-news" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Travel News</NavLink>
-            <NavLink to="/category/destinations" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Destinations</NavLink>
-            <NavLink to="/category/flights" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Flights</NavLink>
-            <NavLink to="/category/hotels" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Hotels</NavLink>
-            <NavLink to="/admin" className="mobile-nav-item login-item" onClick={() => setMenuOpen(false)}>Admin Login</NavLink>
+          <div className="mobile-logo-container">
+            <img src="/assets/images/logo.png" alt="TRAVELTEW NEWS" className="mobile-logo-img" />
+            <h2 className="mobile-logo">TRAVELTEW<span>NEWS</span></h2>
           </div>
           <button className="mobile-close-btn" onClick={() => setMenuOpen(false)}>
             <X size={22} />
           </button>
         </div>
 
-        {/* About Section */}
-        <div className="mobile-section">
-          <h3 className="mobile-section-title">About TravelTew News</h3>
-          <p className="mobile-about-text">
-            TravelTew News is your premier destination for global travel insights,
-            breaking aviation updates, and cultural stories from across the planet.
-            We connect you to the latest events and hidden gems in every region.
-          </p>
-        </div>
-
-        {/* Categories */}
-        <div className="mobile-section">
-          <h3 className="mobile-section-title">Browse by Category</h3>
-          <div className="mobile-category-grid">
-            {categories.map(cat => (
-              <Link
-                key={cat}
-                to={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`}
-                className="mobile-category-chip"
-                onClick={() => setMenuOpen(false)}
-              >
-                {cat}
-              </Link>
-            ))}
+        <div className="mobile-menu-content">
+          <NavLink to="/" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Home</NavLink>
+          
+          <div className="mobile-section">
+            <h3 className="mobile-section-title">News Sections</h3>
+            <div className="mobile-category-grid">
+              {categories.map(cat => (
+                <Link
+                  key={cat}
+                  to={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="mobile-category-chip"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {cat}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Regions */}
-        <div className="mobile-section">
-          <h3 className="mobile-section-title">Top Regions</h3>
-          <div className="mobile-nav">
-            {regions.map(region => (
-              <Link
-                key={region}
-                to={`/region/${encodeURIComponent(region)}`}
-                className="mobile-nav-link"
-                onClick={() => setMenuOpen(false)}
-              >
-                {region}
-              </Link>
-            ))}
+          <div className="mobile-section">
+            <h3 className="mobile-section-title">Regions</h3>
+            <div className="mobile-nav">
+              {regions.map(region => (
+                <Link
+                  key={region}
+                  to={`/region/${encodeURIComponent(region)}`}
+                  className="mobile-nav-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {region}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Footer info */}
-        <div className="mobile-section mobile-footer-info">
-          <p>479+ unique stories updated daily</p>
-          <p>Powered by GNews API & RSS Feeds</p>
-          <p style={{ marginTop: '0.5rem', color: 'var(--accent)', fontWeight: 600 }}>
-            © 2026 TravelTew News
-          </p>
+          <div className="mobile-footer-actions">
+            <NavLink to="/admin" className="mobile-nav-item login-item" onClick={() => setMenuOpen(false)}>Admin Login</NavLink>
+            <p className="mobile-tagline">Your #1 Travel News Source Worldwide</p>
+            <p className="copyright">© 2026 TravelTew News</p>
+          </div>
         </div>
       </div>
 
@@ -204,3 +205,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

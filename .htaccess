@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Handle API requests - don't redirect to index.html
+  # This allows api/php/ directory to handle its own routing
+  RewriteCond %{REQUEST_URI} ^/api/php/ [NC]
+  RewriteRule ^ - [L]
+
+  # SPA Routing: Redirect all non-file/non-directory requests to index.html
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>

@@ -3,16 +3,40 @@ const router = express.Router();
 const { client } = require('../data/turso');
 
 const mapArticle = row => ({
-  _id: row.id,
+  id: row.id,
+  _id: row.id, 
   title: row.title,
   url: row.url,
-  description: row.description,
-  source: row.source,
-  category: row.category,
-  region: row.region,
-  image: row.image,
+  description: row.description || '',
+  source: row.source || 'Unknown',
+  category: row.category || 'General',
+  region: row.region || 'Global',
+  image: row.image || '',
   publishedAt: row.published_at,
-  trending: !!row.trending
+  published_at: row.published_at, 
+  trending: !!row.trending,
+  author: row.author || '',
+  city: row.city || '',
+  isBreaking: !!row.is_breaking
+});
+
+// Get article by ID
+router.get('/article/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.execute({
+      sql: 'SELECT * FROM articles WHERE id = ?',
+      args: [id]
+    });
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Article not found' });
+    }
+    
+    res.json(mapArticle(result.rows[0]));
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Get latest news with pagination
@@ -46,19 +70,17 @@ router.get('/latest', async (req, res) => {
 // Get news by category
 router.get('/category/:category', async (req, res) => {
   try {
-    const { category } = req.params;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 18;
-    const skip = (page - 1) * limit;
+    const normalizedCategory = category.replace(/-/g, ' ');
+    const keyword = `%${normalizedCategory}%`;
 
     const result = await client.execute({
       sql: 'SELECT * FROM articles WHERE category LIKE ? ORDER BY published_at DESC LIMIT ? OFFSET ?',
-      args: [`%${category}%`, limit, skip]
+      args: [keyword, limit, skip]
     });
     
     const countResult = await client.execute({
       sql: 'SELECT COUNT(*) as count FROM articles WHERE category LIKE ?',
-      args: [`%${category}%`]
+      args: [keyword]
     });
     const total = parseInt(countResult.rows[0].count, 10);
 
@@ -258,9 +280,22 @@ router.post('/manual', async (req, res) => {
   try {
     const published_at = new Date().toISOString();
     await client.execute({
-      sql: `INSERT INTO articles (title, url, description, source, category, region, image, published_at, trending)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      args: [title, url || `manual-${Date.now()}`, description, source || 'TTN News', category, region || 'Global', image, published_at, 0]
+      sql: `INSERT INTO articles (title, url, description, source, category, region, image, published_at, trending, author, city, is_breaking)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [
+        title, 
+        url || `manual-${Date.now()}`, 
+        description, 
+        source || 'TTN News', 
+        category, 
+        region || 'Global', 
+        image, 
+        published_at, 
+        0,
+        req.body.author || 'Admin',
+        req.body.city || '',
+        req.body.isBreaking ? 1 : 0
+      ]
     });
     
     res.json({ message: 'Article added successfully' });

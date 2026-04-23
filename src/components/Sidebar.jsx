@@ -42,6 +42,15 @@ const Sidebar = () => {
     }));
   };
 
+  const handleCleanSource = (name) => {
+    if (!name) return name;
+    // Remove www. and then pick the main domain part
+    let clean = name.replace(/^www\./i, '');
+    clean = clean.split('.')[0];
+    // Capitalize first letter
+    return clean.charAt(0).toUpperCase() + clean.slice(1);
+  };
+
   const handleManualRefresh = async () => {
     try {
       setRefreshing(true);
@@ -59,12 +68,12 @@ const Sidebar = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar-section ttn-section">
-        <h3 className="section-title ttn-title">TTN News</h3>
+        <h3 className="section-title ttn-title">TRAVELTEW — Your #1 Travel News Source</h3>
         <div className="ttn-sub-sections">
-          {['Announcements', 'Events', 'Highlights', 'Latest TTN'].map(sub => (
+          {['Breaking News', 'Airport News', 'Popular Destinations', 'Major Cities'].map(sub => (
             <NavLink 
               key={sub} 
-              to={`/category/${encodeURIComponent(sub)}`}
+              to={`/category/${sub.toLowerCase().replace(/\s+/g, '-')}`}
               className={({ isActive }) => isActive ? 'ttn-item active' : 'ttn-item'}
             >
               <span className="ttn-dot"></span>
@@ -86,7 +95,7 @@ const Sidebar = () => {
       </div>
 
       <div className="sidebar-section">
-        <h3 className="section-title">Media Outlets</h3>
+        <h3 className="section-title">World Travel News</h3>
         <div className="region-list-container">
           {Object.keys(sources).length > 0 ? (
             Object.entries(sources).map(([region, regionSources]) => (
@@ -112,7 +121,7 @@ const Sidebar = () => {
                         to={`/source/${encodeURIComponent(source)}`}
                         className={({ isActive }) => isActive ? 'source-item active' : 'source-item'}
                       >
-                        {source}
+                        {handleCleanSource(source)}
                       </NavLink>
                     ))}
                   </div>
@@ -142,11 +151,9 @@ const Sidebar = () => {
             <div className="sidebar-loader"></div>
           ) : trending.length > 0 ? (
             trending.map((article, index) => (
-              <a 
-                key={article._id || index} 
-                href={article.url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <NavLink 
+                key={article.id || article._id || index} 
+                to={`/article/${article.id || article._id}`} 
                 className="trending-item"
               >
                 <div className="trending-visual">
@@ -155,18 +162,19 @@ const Sidebar = () => {
                     <img 
                       src={article.image} 
                       alt="" 
-                      onError={(e) => { e.target.src = `https://picsum.photos/seed/${article.title}/100/100`; }} 
+                      onError={(e) => { e.target.src = `https://picsum.photos/seed/${encodeURIComponent(article.title)}/100/100`; }} 
                     />
                   </div>
                 </div>
                 <p className="trending-title">{article.title}</p>
-              </a>
+              </NavLink>
             ))
           ) : (
             <p className="no-data">No trending news available.</p>
           )}
         </div>
       </div>
+
     </aside>
   );
 };
