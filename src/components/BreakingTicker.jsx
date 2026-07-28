@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../config/api';
 import './BreakingTicker.css';
 
 const BreakingTicker = () => {
     const [trending, setTrending] = useState([]);
 
     useEffect(() => {
-        fetch('/api/php/api.php?route=trending')
-            .then(res => res.json())
+        fetch(`${API_URL}/trending`)
+            .then(res => {
+                if (!res.ok) throw new Error(`Ticker request failed: ${res.status}`);
+                return res.json();
+            })
             .then(data => setTrending(data.articles || []))
             .catch(err => console.error('Ticker error:', err));
     }, []);

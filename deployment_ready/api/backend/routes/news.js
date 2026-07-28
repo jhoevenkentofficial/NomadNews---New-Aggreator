@@ -17,7 +17,8 @@ const mapArticle = row => ({
   trending: !!row.trending,
   author: row.author || '',
   city: row.city || '',
-  isBreaking: !!row.is_breaking
+  isBreaking: !!row.is_breaking,
+  content: row.content || ''
 });
 
 // Get article by ID
@@ -70,7 +71,13 @@ router.get('/latest', async (req, res) => {
 // Get news by category
 router.get('/category/:category', async (req, res) => {
   try {
-    const normalizedCategory = category.replace(/-/g, ' ');
+    const { category } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 18;
+    const skip = (page - 1) * limit;
+    
+    // Normalize category: handle both "airport-news" and "Airport News"
+    const normalizedCategory = category.replace(/-/g, '%');
     const keyword = `%${normalizedCategory}%`;
 
     const result = await client.execute({
@@ -269,19 +276,17 @@ router.get('/fetch', async (req, res) => {
 router.post('/manual', async (req, res) => {
   const { title, url, description, source, category, region, image, secret } = req.body;
   const received = (secret || '').trim();
-  const valid = ['ttn_admin_2026', process.env.ADMIN_TOKEN].filter(Boolean).map(s => s.trim());
-  
-  console.log('Admin attempt - received:', JSON.stringify(received));
+  const valid = ['TRAVELTEW_2026', process.env.ADMIN_TOKEN].filter(Boolean).map(s => s.trim());
   
   if (!valid.includes(received)) {
-    return res.status(401).json({ error: 'Unauthorized', hint: 'Use key: ttn_admin_2026' });
+    return res.status(401).json({ error: 'Unauthorized', hint: 'Please enter the correct Admin Secret Key' });
   }
 
   try {
     const published_at = new Date().toISOString();
     await client.execute({
-      sql: `INSERT INTO articles (title, url, description, source, category, region, image, published_at, trending, author, city, is_breaking)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      sql: `INSERT INTO articles (title, url, description, source, category, region, image, published_at, trending, author, city, is_breaking, content)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         title, 
         url || `manual-${Date.now()}`, 
@@ -294,7 +299,8 @@ router.post('/manual', async (req, res) => {
         0,
         req.body.author || 'Admin',
         req.body.city || '',
-        req.body.isBreaking ? 1 : 0
+        req.body.isBreaking ? 1 : 0,
+        req.body.content || description || ''
       ]
     });
     

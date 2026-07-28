@@ -35,9 +35,25 @@
 .city-subtitle {
     font-family: 'Inter', sans-serif;
     color: var(--text-muted);
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     font-size: 0.9rem;
     line-height: 1.5;
+}
+
+.region-group {
+    margin-bottom: 2.5rem;
+}
+
+.region-name {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 0.5rem;
 }
 
 .city-grid {
@@ -89,7 +105,22 @@
   font-style: italic;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.8rem;
+  }
+  .city-explorer {
+    padding: 1.5rem;
+  }
+  .city-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+  .city-chip {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+  }
+  .news-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }

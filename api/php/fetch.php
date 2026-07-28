@@ -75,9 +75,147 @@ function detectCategory($title, $description, $currentCat) {
     return $currentCat;
 }
 
-function maskSource($originalSource) {
-    // Force TRAVELTEW branding for all sources
-    return 'TRAVELTEW NEWS';
+function extractSource($feedUrl) {
+    // Extract a clean outlet name from the feed URL
+    $host = parse_url($feedUrl, PHP_URL_HOST) ?? '';
+    $host = preg_replace('/^www\./', '', $host);
+    // Map known hosts to proper brand names
+    $knownSources = [
+        'skift.com'             => 'Skift',
+        'cntraveler.com'        => 'Condé Nast Traveler',
+        'travelweekly.co.uk'    => 'Travel Weekly',
+        'travelnewsasia.com'    => 'Travel News Asia',
+        'ttgasia.com'           => 'TTG Asia',
+        'travelpulse.com'       => 'TravelPulse',
+        'tourismupdate.co.za'   => 'Tourism Update',
+        'hoteliermiddleeast.com'=> 'Hotelier Middle East',
+        'simpleflying.com'      => 'Simple Flying',
+        'bbci.co.uk'            => 'BBC News',
+        'bbc.co.uk'             => 'BBC News',
+        'cnn.com'               => 'CNN',
+        'rss.cnn.com'           => 'CNN',
+        'aljazeera.com'         => 'Al Jazeera',
+        'reutersagency.com'     => 'Reuters',
+        'aviationpros.com'      => 'Aviation Pros',
+        'traveldailynews.com'   => 'Travel Daily News',
+        'nytimes.com'           => 'The New York Times',
+        'theguardian.com'       => 'The Guardian',
+        'arabnews.com'          => 'Arab News',
+        'straitstimes.com'      => 'The Straits Times',
+        'smh.com.au'            => 'Sydney Morning Herald',
+        'dawn.com'              => 'Dawn',
+        'thestar.com.my'        => 'The Star',
+        'theglobeandmail.com'   => 'The Globe and Mail',
+    ];
+    if (isset($knownSources[$host])) return $knownSources[$host];
+    // Fallback: capitalize the domain
+    $parts = explode('.', $host);
+    return ucfirst($parts[0] ?? 'News Wire');
+}
+
+/**
+ * Attempt to scrape the full article content from a URL
+ */
+function scrapeFullContent($url) {
+    if (!$url) return '';
+    
+    $context = stream_context_create([
+        "http" => [
+            "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n",
+            "timeout" => 15,
+            "follow_location" => 1
+        ]
+    ]);
+    
+    $html = @file_get_contents($url, false, $context);
+    if (!$html) return '';
+
+    // Handle encoding issues
+    $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+
+    $doc = new DOMDocument();
+    // Use flags to handle malformed HTML gracefully
+    @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $xpath = new DOMXPath($doc);
+
+    // Common article selectors (ordered by specificity and commonality)
+    $selectors = [
+        "//article",
+        "//main",
+        "//div[contains(@class, 'article-content')]",
+        "//div[contains(@class, 'article-body')]",
+        "//div[contains(@class, 'post-content')]",
+        "//div[contains(@class, 'entry-content')]",
+        "//div[contains(@class, 'story-body')]",
+        "//div[contains(@class, 'content-inner')]",
+        "//div[contains(@id, 'article-body')]",
+        "//div[contains(@id, 'story-body')]",
+        "//div[contains(@class, 'td-post-content')]", // Common in WP Newspaper themes
+        "//section[contains(@class, 'article')]",
+        "//div[contains(@class, 'article-text')]"
+    ];
+
+    $content = "";
+    foreach ($selectors as $selector) {
+        $nodes = $xpath->query($selector);
+        if ($nodes->length > 0) {
+            foreach ($nodes as $node) {
+                // Remove known noisy elements inside the content
+                $noiseSelectors = [
+                    ".//script", ".//style", ".//nav", ".//footer", ".//header", 
+                    ".//aside", ".//iframe", ".//form", ".//button", 
+                    ".//div[contains(@class, 'ad')]", ".//div[contains(@class, 'social')]",
+                    ".//div[contains(@class, 'share')]", ".//div[contains(@class, 'related')]",
+                    ".//div[contains(@class, 'newsletter')]", ".//div[contains(@class, 'promo')]",
+                    ".//div[contains(@class, 'tags')]", ".//div[contains(@class, 'comments')]"
+                ];
+                foreach ($noiseSelectors as $ns) {
+                    $noises = $xpath->query($ns, $node);
+                    foreach ($noises as $noise) {
+                        if ($noise->parentNode) $noise->parentNode->removeChild($noise);
+                    }
+                }
+                
+                $nodeHtml = $doc->saveHTML($node);
+                // Strip tags from a copy to check actual text length
+                if (strlen(strip_tags($nodeHtml)) > 200) {
+                    $content .= $nodeHtml;
+                }
+            }
+            if (strlen(strip_tags($content)) > 400) break; // Found enough content
+        }
+    }
+
+    // Fallback: If no major container found, try to extract all relevant P tags
+    if (strlen(strip_tags($content)) < 250) {
+        $content = "";
+        $nodes = $xpath->query("//p");
+        $paraCount = 0;
+        foreach ($nodes as $node) {
+            $text = trim($node->nodeValue);
+            // Ignore short fragments, navigation links, and copyright notices
+            if (strlen($text) > 60 && !preg_match('/(click here|follow us|copyright|all rights reserved|read more|privacy policy)/i', $text)) {
+                $content .= "<p>" . htmlspecialchars($text) . "</p>";
+                $paraCount++;
+            }
+        }
+    }
+
+    // Final Clean up
+    $content = preg_replace('/<script\b[^>]*>[\s\S]*?<\/script>/i', '', $content);
+    $content = preg_replace('/<style\b[^>]*>[\s\S]*?<\/style>/i', '', $content);
+    $content = preg_replace('/on\w+="[^"]*"/i', '', $content);
+    $content = preg_replace('/<a\b[^>]*>(.*?)<\/a>/i', '$1', $content); // Strip links to keep users on YOUR site
+    
+    // Ensure we don't have empty tags
+    $content = preg_replace('/<[^>]*>\s*<\/[^>]*>/', '', $content);
+    $content = preg_replace('/<div\b[^>]*>\s*<\/div>/i', '', $content);
+    $content = preg_replace('/<p\b[^>]*>\s*<\/p>/i', '', $content);
+    
+    // Fix common character encoding artifacts
+    $content = str_replace(['Â', 'â'], '', $content);
+
+    return trim($content);
 }
 
 function fetchAllNews() {
@@ -121,8 +259,47 @@ function fetchAllNews() {
                 $title = (string)$item->title;
                 $link = (string)($item->link ?: $item->link['href']);
                 $desc = strip_tags((string)($item->description ?: $item->summary));
-                $author = (string)($item->creator ?? $item->author ?? $item->children('dc', true)->creator ?? 'TRAVELTEW Reporter');
-                $source = maskSource('');
+                $author = (string)($item->creator ?? $item->author ?? $item->children('dc', true)->creator ?? 'Staff Reporter');
+                $source = extractSource($feed['url']);
+
+                // Try to get full article body from content:encoded (many feeds provide it)
+                $contentEncoded = (string)($item->children('content', true)->encoded ?? '');
+                if (!$contentEncoded) {
+                    // Fallback: some feeds put it in media:content or description as HTML
+                    $contentEncoded = (string)($item->children('media', true)->description ?? '');
+                }
+
+                // If still empty or very short, attempt to scrape the full article from the link
+                if (strlen($contentEncoded) < 200) {
+                    $scraped = scrapeFullContent($link);
+                    if ($scraped) $contentEncoded = $scraped;
+                }
+
+                // NEW: Extract 2-3 paragraphs for the description from the content
+                if (strlen($contentEncoded) > 300) {
+                    $doc = new DOMDocument();
+                    @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $contentEncoded, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                    $xpath = new DOMXPath($doc);
+                    $pNodes = $xpath->query("//p");
+                    $paragraphs = [];
+                    foreach ($pNodes as $p) {
+                        $pText = trim($p->nodeValue);
+                        if (strlen($pText) > 60) {
+                            $paragraphs[] = $pText;
+                            if (count($paragraphs) >= 3) break;
+                        }
+                    }
+                    if (count($paragraphs) > 0) {
+                        $desc = implode("\n\n", $paragraphs);
+                    }
+                }
+
+                // Clean up any script/style tags but keep paragraphs and formatting
+                if ($contentEncoded) {
+                    $contentEncoded = preg_replace('/<script\b[^>]*>[\s\S]*?<\/script>/i', '', $contentEncoded);
+                    $contentEncoded = preg_replace('/<style\b[^>]*>[\s\S]*?<\/style>/i', '', $contentEncoded);
+                    $contentEncoded = preg_replace('/on\w+="[^"]*"/i', '', $contentEncoded);
+                }
                 
                 $city = detectCity($title, $desc);
                 $category = detectCategory($title, $desc, $feed['category']);
@@ -132,8 +309,8 @@ function fetchAllNews() {
                 
                 try {
                     turso_query(
-                        "INSERT INTO articles (title, url, description, source, category, region, image, published_at, author, city, is_breaking) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        [$title, $link, $desc, $source, $category, $region, "https://picsum.photos/seed/".urlencode($title)."/800/400", $pubDate, $author, $city, $isBreaking]
+                        "INSERT OR IGNORE INTO articles (title, url, description, content, source, category, region, image, published_at, author, city, is_breaking) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [$title, $link, $desc, $contentEncoded, $source, $category, $region, "https://picsum.photos/seed/".urlencode($title)."/800/400", $pubDate, $author, $city, $isBreaking]
                     );
                     $totalSaved++;
                 } catch (Exception $e) { }
@@ -172,12 +349,35 @@ function fetchAllNews() {
                         $city = detectCity($article['title'], $article['description']);
                         $category = $city ? 'Major Cities' : detectCategory($article['title'], $article['description'], $gn['cat']);
                         $isBreaking = ($category === 'Breaking News') ? 1 : 0;
-                        $author = str_replace('By ', '', $article['source']['name']);
-                        $source = maskSource('');
+                        $author = !empty($article['source']['name']) ? $article['source']['name'] : 'Staff Reporter';
+                        $source = !empty($article['source']['name']) ? $article['source']['name'] : 'News Wire';
+                        // GNews API provides full content in article['content'] field
+                        $gnContent = !empty($article['content']) ? $article['content'] : '';
+
+                        // NEW: Extract 2-3 paragraphs for GNews too
+                        if (!empty($gnContent)) {
+                            $gnDesc = $article['description'];
+                            $doc = new DOMDocument();
+                            @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $gnContent, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                            $xpath = new DOMXPath($doc);
+                            $pNodes = $xpath->query("//p");
+                            $paragraphs = [];
+                            foreach ($pNodes as $p) {
+                                $pText = trim($p->nodeValue);
+                                if (strlen($pText) > 60) {
+                                    $paragraphs[] = $pText;
+                                    if (count($paragraphs) >= 3) break;
+                                }
+                            }
+                            if (count($paragraphs) > 0) {
+                                $gnDesc = implode("\n\n", $paragraphs);
+                            }
+                            $article['description'] = $gnDesc;
+                        }
 
                         turso_query(
-                            "INSERT INTO articles (title, url, description, source, category, region, image, published_at, author, city, is_breaking) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                            [$article['title'], $article['url'], $article['description'], $source, $category, detectRegion('', $article['title'], $article['description']), $article['image'], date('Y-m-d H:i:s', strtotime($article['publishedAt'])), $author, $city, $isBreaking]
+                            "INSERT OR IGNORE INTO articles (title, url, description, content, source, category, region, image, published_at, author, city, is_breaking) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            [$article['title'], $article['url'], $article['description'], $gnContent, $source, $category, detectRegion('', $article['title'], $article['description']), $article['image'], date('Y-m-d H:i:s', strtotime($article['publishedAt'])), $author, $city, $isBreaking]
                         );
                         $totalSaved++;
                     } catch (Exception $e) { }

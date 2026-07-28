@@ -34,7 +34,7 @@ app.use('/api/news', newsRoutes);
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: 'mongodb' }));
 
-// Manual Fetch Trigger (for Vercel Cron)
+// Manual Fetch Trigger
 app.get('/api/news/fetch', async (req, res) => {
   try {
     await fetchAndSaveNews(io);
@@ -44,7 +44,7 @@ app.get('/api/news/fetch', async (req, res) => {
   }
 });
 
-// Socket.io Connection (Note: Might not persist on Vercel)
+// Socket.io Connection
 io.on('connection', (socket) => {
   console.log('A user connected');
   socket.on('disconnect', () => {
@@ -52,13 +52,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Start Cron (Local only)
-if (!process.env.VERCEL) {
+if (require.main === module) {
   startCronJob(io);
-}
-
-// Start Server (Only if not handled by Vercel)
-if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 5000;
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

@@ -140,3 +140,51 @@ input:focus, select:focus, textarea:focus {
     grid-template-columns: 1fr;
   }
 }
+
+.affiliate-admin-panel {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  background: #fff;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.affiliate-admin-kicker {
+  color: #D50000;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.affiliate-admin-panel h3 {
+  margin-top: 0.25rem;
+  font-size: 1.2rem;
+}
+
+.affiliate-admin-panel p {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+}
+
+.affiliate-admin-grid {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-top: 1rem;
+}
+
+.affiliate-admin-item {
+  display: grid;
+  gap: 0.2rem;
+  border-left: 3px solid #D50000;
+  background: #FAFAFA;
+  padding: 0.75rem;
+}
+
+.affiliate-admin-item span,
+.affiliate-admin-item small {
+  color: #666;
+  font-size: 0.8rem;
+}

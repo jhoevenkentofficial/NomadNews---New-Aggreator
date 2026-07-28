@@ -48,7 +48,8 @@ const initDB = async () => {
     const migrationColumns = [
       { name: 'author', type: 'TEXT' },
       { name: 'city', type: 'TEXT' },
-      { name: 'is_breaking', type: 'BOOLEAN DEFAULT 0' }
+      { name: 'is_breaking', type: 'BOOLEAN DEFAULT 0' },
+      { name: 'content', type: "TEXT DEFAULT ''" }
     ];
 
     for (const col of migrationColumns) {
@@ -75,7 +76,13 @@ const initDB = async () => {
   return client;
 };
 
+const closeDB = () => {
+  if (typeof client.close === 'function') {
+    client.close();
+  }
+};
 module.exports = {
   client,
-  initDB
+  initDB,
+  closeDB
 };

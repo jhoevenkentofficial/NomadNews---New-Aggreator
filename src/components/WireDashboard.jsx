@@ -1,21 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import NewsCard from './NewsCard';
+import { AffiliateWidget } from './AffiliateWidget';
 import './Dashboard.css';
+
+const getTopAdKeys = (title) => {
+  const normalizedTitle = (title || '').toLowerCase();
+  if (normalizedTitle.includes('europe')) return ['trip-europe-flights'];
+  if (normalizedTitle.includes('south america')) return ['trip-south-america-flights'];
+  return ['trip-sea-flights'];
+};
 
 const WireDashboard = ({ news, title }) => {
   if (!news || news.length === 0) {
     return <div className="no-news">No travel news reports are available for this section currently.</div>;
   }
 
-  // 1. Partition for Hero Grid (Top Section)
-  // We use slightly offset slices to make it feel fresh
   const leftColNews = news.slice(0, 7);
   const centerHero = news[7] || news[0];
   const rightColNews = news.slice(8, 15);
-
-  // 2. Group by Categories for lower blocks
-  // We only show category blocks if we aren't already looking at a specific category
   const categories = [...new Set(news.map(a => a.category))].filter(c => c);
 
   return (
@@ -26,7 +29,13 @@ const WireDashboard = ({ news, title }) => {
         </header>
       )}
 
-      {/* SECTION 1: HERO WIRE GRID */}
+      <AffiliateWidget
+        slot="listingTop"
+        keys={getTopAdKeys(title)}
+        compact
+        title={title ? `${title} Travel Offers` : 'Flight Deals for Travel Readers'}
+      />
+
       <section className="hero-grid-section">
         <div className="hero-column-side">
           <h3 className="column-title">Latest Headlines</h3>
@@ -43,29 +52,53 @@ const WireDashboard = ({ news, title }) => {
         </div>
       </section>
 
-      {/* SECTION 2: CATEGORY WIRE BLOCKS */}
+      {news.length >= 12 && (
+        <AffiliateWidget
+          slot="listingMid"
+          keys={['klook']}
+          title="Tours Worth Booking"
+        />
+      )}
+
       <div className="category-blocks-grid">
-        {categories.slice(0, 8).map(cat => {
+        {categories.slice(0, 8).map((cat, catIndex) => {
           const catArticles = news.filter(a => a.category === cat).slice(0, 4);
           if (catArticles.length < 2) return null;
+
+          const sponsoredAfter = {
+            1: { keys: ['kiwi-flights'], title: 'Compare Flight Options' },
+            3: { keys: ['getrentacar'], title: 'Car Hire for Readers' },
+            5: { keys: ['compensair'], title: 'Flight Delay Support' }
+          }[catIndex];
           
           return (
-            <div key={cat} className="category-block">
-              <div className="block-header">
-                <h2>{cat}</h2>
-                <Link to={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`} className="block-more">
-                  MORE {cat.toUpperCase()} →
-                </Link>
-              </div>
-              <div className="block-content">
-                <NewsCard article={catArticles[0]} variant="standard" />
-                <div className="block-list-subset">
-                  {catArticles.slice(1).map((a, idx) => (
-                    <NewsCard key={`${a.id}-${idx}`} article={a} variant="list" />
-                  ))}
+            <React.Fragment key={cat}>
+              <div className="category-block">
+                <div className="block-header">
+                  <h2>{cat}</h2>
+                  <Link to={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`} className="block-more">
+                    MORE {cat.toUpperCase()} -
+                  </Link>
+                </div>
+                <div className="block-content">
+                  <NewsCard article={catArticles[0]} variant="standard" />
+                  <div className="block-list-subset">
+                    {catArticles.slice(1).map((a, idx) => (
+                      <NewsCard key={`${a.id}-${idx}`} article={a} variant="list" />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+              {sponsoredAfter && (
+                <div className="category-sponsored">
+                  <AffiliateWidget
+                    slot="listingMid"
+                    keys={sponsoredAfter.keys}
+                    title={sponsoredAfter.title}
+                  />
+                </div>
+              )}
+            </React.Fragment>
           );
         })}
       </div>

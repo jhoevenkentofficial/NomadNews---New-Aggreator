@@ -34,18 +34,34 @@ const CategoryPage = () => {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
-  const majorCitiesList = [
-    'Paris', 'London', 'Bangkok', 'Dubai', 'Singapore', 'New York City', 'Istanbul', 'Tokyo', 'Kuala Lumpur', 'Hong Kong',
-    'Rome', 'Barcelona', 'Amsterdam', 'Madrid', 'Berlin', 'Vienna', 'Prague', 'Budapest', 'Lisbon', 'Athens', 'Milan',
-    'Florence', 'Venice', 'Munich', 'Copenhagen', 'Stockholm', 'Dublin', 'Edinburgh', 'Brussels', 'Zurich', 'Geneva',
-    'Oslo', 'Helsinki', 'Reykjavik', 'Moscow', 'St. Petersburg', 'Warsaw', 'Krakow', 'Tallinn', 'Riga', 'Beijing',
-    'Shanghai', 'Seoul', 'Osaka', 'Kyoto', 'Taipei', 'Hanoi', 'Ho Chi Minh City', 'Bali (Denpasar)', 'Jakarta', 'Phuket',
-    'Chiang Mai', 'Manila', 'Cebu', 'Phnom Penh', 'Siem Reap', 'Yangon', 'Colombo', 'Male', 'Kathmandu', 'Sydney',
-    'Melbourne', 'Brisbane', 'Auckland', 'Queenstown', 'Los Angeles', 'Las Vegas', 'San Francisco', 'Miami', 'Orlando',
-    'Chicago', 'Toronto', 'Vancouver', 'Montreal', 'Mexico City', 'Cancun', 'Havana', 'San Jose (Costa Rica)', 'Panama City', 'Lima',
-    'Cusco', 'Rio de Janeiro', 'Sao Paulo', 'Buenos Aires', 'Santiago', 'Bogota', 'Cartagena', 'Cape Town', 'Johannesburg',
-    'Marrakech', 'Cairo', 'Luxor', 'Nairobi', 'Zanzibar City', 'Addis Ababa', 'Tel Aviv', 'Jerusalem', 'Doha', 'Abu Dhabi', 'Mecca'
-  ];
+  const majorCitiesByRegion = {
+    'Europe': [
+      'Paris', 'London', 'Istanbul', 'Rome', 'Barcelona', 'Amsterdam', 'Madrid', 'Berlin', 'Vienna', 'Prague', 'Budapest', 'Lisbon', 'Athens', 'Milan',
+      'Florence', 'Venice', 'Munich', 'Copenhagen', 'Stockholm', 'Dublin', 'Edinburgh', 'Brussels', 'Zurich', 'Geneva',
+      'Oslo', 'Helsinki', 'Reykjavik', 'Moscow', 'St. Petersburg', 'Warsaw', 'Krakow', 'Tallinn', 'Riga'
+    ],
+    'Asia': [
+      'Bangkok', 'Singapore', 'Tokyo', 'Kuala Lumpur', 'Hong Kong', 'Beijing',
+      'Shanghai', 'Seoul', 'Osaka', 'Kyoto', 'Taipei', 'Hanoi', 'Ho Chi Minh City', 'Bali (Denpasar)', 'Jakarta', 'Phuket',
+      'Chiang Mai', 'Manila', 'Cebu', 'Phnom Penh', 'Siem Reap', 'Yangon', 'Colombo', 'Male', 'Kathmandu'
+    ],
+    'North America': [
+      'New York City', 'Los Angeles', 'Las Vegas', 'San Francisco', 'Miami', 'Orlando',
+      'Chicago', 'Toronto', 'Vancouver', 'Montreal', 'Mexico City', 'Cancun', 'Havana', 'San Jose (Costa Rica)', 'Panama City'
+    ],
+    'Middle East': [
+      'Dubai', 'Tel Aviv', 'Jerusalem', 'Doha', 'Abu Dhabi', 'Mecca'
+    ],
+    'South America': [
+      'Lima', 'Cusco', 'Rio de Janeiro', 'Sao Paulo', 'Buenos Aires', 'Santiago', 'Bogota', 'Cartagena'
+    ],
+    'Africa': [
+      'Cape Town', 'Johannesburg', 'Marrakech', 'Cairo', 'Luxor', 'Nairobi', 'Zanzibar City', 'Addis Ababa'
+    ],
+    'Oceania': [
+      'Sydney', 'Melbourne', 'Brisbane', 'Auckland', 'Queenstown'
+    ]
+  };
 
   if (loading) {
     return (
@@ -71,17 +87,23 @@ const CategoryPage = () => {
         <div className="city-explorer">
           <h3>Featured Travel Hubs</h3>
           <p className="city-subtitle">Browse the world's most sought-after destinations from our primary source network.</p>
-          <div className="city-grid">
-            {majorCitiesList.map(city => (
-              <a 
-                key={city} 
-                href={`/search?q=${encodeURIComponent(city)}`}
-                className="city-chip"
-              >
-                {city}
-              </a>
-            ))}
-          </div>
+          
+          {Object.entries(majorCitiesByRegion).map(([region, cities]) => (
+            <div key={region} className="region-group">
+              <h4 className="region-name">{region}</h4>
+              <div className="city-grid">
+                {cities.map(city => (
+                  <a 
+                    key={city} 
+                    href={`/search?q=${encodeURIComponent(city)}`}
+                    className="city-chip"
+                  >
+                    {city}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
           <div className="city-divider"></div>
         </div>
       )}

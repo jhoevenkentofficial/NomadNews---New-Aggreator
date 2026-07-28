@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../config/api';
-import { RefreshCw } from 'lucide-react';
+import { AffiliateWidget } from './AffiliateWidget';
+import { RefreshCw, Flame, Plane, Landmark, MapPin } from 'lucide-react';
 import './Sidebar.css';
 
 const REGIONS = [
@@ -70,14 +71,19 @@ const Sidebar = () => {
       <div className="sidebar-section ttn-section">
         <h3 className="section-title ttn-title">TRAVELTEW — Your #1 Travel News Source</h3>
         <div className="ttn-sub-sections">
-          {['Breaking News', 'Airport News', 'Popular Destinations', 'Major Cities'].map(sub => (
+          {[
+            { name: 'Breaking News', icon: <Flame size={16} /> },
+            { name: 'Travel News', icon: <Plane size={16} /> },
+            { name: 'Major Cities', icon: <Landmark size={16} /> },
+            { name: 'Popular Destinations', icon: <MapPin size={16} /> }
+          ].map(sub => (
             <NavLink 
-              key={sub} 
-              to={`/category/${sub.toLowerCase().replace(/\s+/g, '-')}`}
+              key={sub.name} 
+              to={`/category/${sub.name.toLowerCase().replace(/\s+/g, '-')}`}
               className={({ isActive }) => isActive ? 'ttn-item active' : 'ttn-item'}
             >
-              <span className="ttn-dot"></span>
-              {sub}
+              <div className="ttn-item-icon">{sub.icon}</div>
+              <span>{sub.name}</span>
             </NavLink>
           ))}
         </div>
@@ -94,10 +100,24 @@ const Sidebar = () => {
         </button>
       </div>
 
+      <div className="sidebar-section sidebar-sponsored-section">
+        <AffiliateWidget
+          slot="sidebar"
+          compact
+          title="Travel Booking Tools"
+        />
+      </div>
+
       <div className="sidebar-section">
         <h3 className="section-title">World Travel News</h3>
         <div className="region-list-container">
-          {Object.keys(sources).length > 0 ? (
+          {loading ? (
+            <div className="sidebar-loading-placeholder">
+              {[1, 2, 3, 4, 5].map(i => (
+                <div key={i} className="skeleton-line"></div>
+              ))}
+            </div>
+          ) : Object.keys(sources).length > 0 ? (
             Object.entries(sources).map(([region, regionSources]) => (
               <div key={region} className="sidebar-region-group">
                 <div 
@@ -180,3 +200,5 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+

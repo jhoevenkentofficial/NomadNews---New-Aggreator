@@ -1,0 +1,490 @@
+.affiliate-widget {
+  position: relative;
+  width: 100%;
+  margin: 1.75rem 0;
+  border-top: 3px solid #111;
+  border-bottom: 1px solid #dedede;
+  background: #fff;
+  padding: 1rem 0 1.1rem;
+}
+
+.affiliate-widget::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 86px;
+  height: 3px;
+  background: var(--accent);
+}
+
+.affiliate-widget.leaderboard {
+  margin: 0 0 1.5rem;
+  border: 1px solid #e8e8e8;
+  border-left: 0;
+  border-right: 0;
+  background: #fafafa;
+  padding: 0.7rem 0;
+}
+
+.affiliate-widget.leaderboard::before {
+  display: none;
+}
+
+.affiliate-ad-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-bottom: 0.55rem;
+  color: #6f6f6f;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.affiliate-ad-label span { color: #888; }
+.affiliate-ad-label strong { color: #444; font-size: 0.68rem; font-weight: 900; }
+
+.affiliate-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.affiliate-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.affiliate-kicker::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+
+.affiliate-header h3 {
+  margin-top: 0.35rem;
+  font-size: 1.12rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.affiliate-header p {
+  max-width: 320px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: right;
+}
+
+.affiliate-widget.compact:not(.leaderboard) {
+  margin-top: 0;
+  padding-top: 1rem;
+}
+
+.affiliate-widget.compact:not(.leaderboard) .affiliate-header {
+  margin-bottom: 0.85rem;
+}
+
+.affiliate-widget.compact:not(.leaderboard) .affiliate-header h3 {
+  font-size: 1rem;
+}
+
+.affiliate-widget.compact:not(.leaderboard) .affiliate-header p {
+  display: none;
+}
+
+.affiliate-grid {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+.affiliate-homepage .affiliate-grid,
+.affiliate-article .affiliate-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.affiliate-listingMid .affiliate-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.affiliate-listingTop .affiliate-grid,
+.affiliate-sidebar .affiliate-grid {
+  grid-template-columns: 1fr;
+}
+
+.affiliate-card {
+  min-width: 0;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  padding: 0.9rem;
+  align-self: start;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.affiliate-card:hover {
+  border-color: #cfcfcf;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.055);
+  transform: translateY(-1px);
+}
+
+.affiliate-card-meta {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 0.7rem;
+  align-items: center;
+  min-height: 34px;
+  margin-bottom: 0.75rem;
+}
+
+.affiliate-icon-wrap {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #ececec;
+  background: #fafafa;
+  color: var(--accent);
+}
+
+.affiliate-card-meta span {
+  display: block;
+  color: var(--accent);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.affiliate-card-meta strong {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.94rem;
+  line-height: 1.22;
+}
+
+.affiliate-card.type-iframe {
+  display: grid;
+  grid-template-columns: minmax(165px, 230px) minmax(0, 728px);
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.affiliate-card.type-iframe .affiliate-card-meta {
+  margin-bottom: 0;
+}
+
+.affiliate-widget.leaderboard .affiliate-card {
+  display: flex;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  transform: none;
+}
+
+.affiliate-iframe-frame {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  width: 100%;
+  min-height: 90px;
+  border: 1px solid #eeeeee;
+  background: #fff;
+}
+
+.affiliate-widget.leaderboard .affiliate-iframe-frame {
+  max-width: 728px;
+  border: 0;
+  background: transparent;
+}
+
+.affiliate-iframe-frame iframe {
+  display: block;
+  width: 100%;
+  max-width: 728px;
+  height: 90px;
+  margin: 0 auto;
+  border: 0;
+}
+
+.affiliate-script-slot {
+  position: relative;
+  min-height: 220px;
+  overflow: visible;
+  border: 1px solid #eeeeee;
+  background: #fff;
+}
+
+.affiliate-script-slot > *:not(.affiliate-loading-note) {
+  width: 100%;
+}
+
+.affiliate-loading-note {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  color: #777;
+  font-size: 0.82rem;
+}
+
+.affiliate-listingMid .placement-klook { grid-column: span 2; }
+.affiliate-widget.affiliate-count-1 .affiliate-grid {
+  grid-template-columns: 1fr;
+}
+
+.affiliate-widget.affiliate-count-1 .affiliate-card {
+  grid-column: auto;
+}
+.affiliate-listingMid .placement-kiwi-flights { grid-column: span 2; }
+.affiliate-listingMid .placement-getrentacar,
+.affiliate-listingMid .placement-compensair { grid-column: span 2; }
+
+.placement-klook .affiliate-script-slot,
+.placement-klook .affiliate-loading-note { min-height: 430px; }
+.placement-kiwi-flights .affiliate-script-slot,
+.placement-kiwi-flights .affiliate-loading-note { min-height: 390px; }
+.placement-getrentacar .affiliate-script-slot,
+.placement-getrentacar .affiliate-loading-note,
+.placement-compensair .affiliate-script-slot,
+.placement-compensair .affiliate-loading-note { min-height: 240px; }
+
+.affiliate-link-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.18rem 0.85rem;
+  align-items: center;
+  min-height: 104px;
+  border: 1px solid #e5e5e5;
+  border-left: 4px solid var(--accent);
+  background: #fbfbfb;
+  padding: 1rem 1.05rem;
+}
+
+.affiliate-link-card:hover { background: #fff; border-color: #d3d3d3; }
+
+.affiliate-link-card span,
+.affiliate-link-card em {
+  color: #777;
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.affiliate-link-card strong {
+  grid-column: 1 / 2;
+  font-size: 1.02rem;
+  line-height: 1.25;
+}
+
+.affiliate-link-card em {
+  grid-column: 1 / 2;
+  color: var(--accent);
+}
+
+.affiliate-link-card svg {
+  grid-row: 1 / span 3;
+  grid-column: 2 / 3;
+  color: var(--accent);
+}
+
+.affiliate-article {
+  margin: 2.5rem 0;
+  padding: 1.15rem 0 1.35rem;
+}
+
+.affiliate-listingMid {
+  margin-top: 0.25rem;
+  margin-bottom: 2rem;
+}
+
+.affiliate-footer {
+  max-width: var(--max-width);
+  width: calc(100% - 2rem);
+  margin: 1rem auto 2rem;
+  border-top: 2px solid var(--text-main);
+  padding: 1rem 0 0;
+}
+
+.affiliate-disclosure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+.affiliate-disclosure p {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  text-align: right;
+  white-space: normal;
+}
+
+.sidebar-sponsored-section {
+  margin-bottom: 1.6rem;
+}
+
+.affiliate-sidebar {
+  margin: 0;
+  border-top: 2px solid #111;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 0.85rem 0 1rem;
+}
+
+.affiliate-sidebar .affiliate-header {
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+.affiliate-sidebar .affiliate-header h3 {
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.affiliate-sidebar .affiliate-header p {
+  display: none;
+}
+
+.affiliate-sidebar .affiliate-grid {
+  gap: 0.7rem;
+}
+
+.affiliate-sidebar .affiliate-card {
+  padding: 0.72rem;
+  box-shadow: none;
+}
+
+.affiliate-sidebar .affiliate-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.affiliate-sidebar .affiliate-card-meta {
+  grid-template-columns: 30px 1fr;
+  gap: 0.58rem;
+  margin-bottom: 0.6rem;
+}
+
+.affiliate-sidebar .affiliate-icon-wrap {
+  width: 30px;
+  height: 30px;
+}
+
+.affiliate-sidebar .affiliate-link-card {
+  min-height: 88px;
+  padding: 0.85rem;
+}
+
+.affiliate-sidebar .affiliate-link-card strong {
+  font-size: 0.95rem;
+}
+
+
+@media (max-width: 1200px) {
+  .affiliate-listingMid .affiliate-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .affiliate-card.type-iframe {
+    grid-template-columns: 1fr;
+  }
+
+  .affiliate-card.type-iframe .affiliate-card-meta {
+    margin-bottom: 0.75rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .affiliate-footer {
+    width: calc(100% - 1rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .affiliate-widget,
+  .affiliate-widget.compact:not(.leaderboard) {
+    margin: 1.35rem 0;
+    padding: 0.95rem 0 1.05rem;
+  }
+
+  .affiliate-widget.leaderboard {
+    margin: 0 0 1.35rem;
+    padding: 0.65rem 0;
+  }
+
+  .affiliate-ad-label {
+    flex-direction: column;
+    gap: 0.2rem;
+    text-align: center;
+  }
+
+  .affiliate-header,
+  .affiliate-disclosure {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .affiliate-header p,
+  .affiliate-disclosure p {
+    max-width: none;
+    text-align: left;
+  }
+
+  .affiliate-homepage .affiliate-grid,
+  .affiliate-article .affiliate-grid,
+  .affiliate-listingMid .affiliate-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .affiliate-listingMid .placement-klook,
+  .affiliate-listingMid .placement-kiwi-flights,
+  .affiliate-listingMid .placement-getrentacar,
+  .affiliate-listingMid .placement-compensair {
+    grid-column: span 1;
+  }
+
+  .affiliate-card {
+    padding: 0.8rem;
+  }
+
+  .affiliate-card-meta {
+    grid-template-columns: 30px 1fr;
+  }
+
+  .affiliate-icon-wrap {
+    width: 30px;
+    height: 30px;
+  }
+
+  .placement-klook .affiliate-script-slot,
+  .placement-klook .affiliate-loading-note { min-height: 500px; }
+
+  .placement-kiwi-flights .affiliate-script-slot,
+  .placement-kiwi-flights .affiliate-loading-note { min-height: 460px; }
+}
+
+
+
+

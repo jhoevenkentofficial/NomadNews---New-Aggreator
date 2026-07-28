@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config/api';
+import { AFFILIATE_PLACEMENTS } from '../components/AffiliateWidget';
 import './AdminPage.css';
 
 const AdminPage = () => {
@@ -8,14 +9,25 @@ const AdminPage = () => {
     title: '',
     url: '',
     description: '',
-    category: 'Announcements',
+    content: '',
+    category: 'Breaking News',
     image: '',
-    secret: 'ttn_admin_2026'
+    author: '',
+    source: 'TTN News',
+    secret: ''
   });
   const [status, setStatus] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
-  const categories = ['Announcements', 'Events', 'Highlights', 'Latest TTN', 'Special Reports'];
+  const categories = [
+    'Breaking News', 
+    'Airport News', 
+    'Popular Destinations', 
+    'Major Cities', 
+    'Travel News', 
+    'Special Reports',
+    'Announcements'
+  ];
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,12 +39,19 @@ const AdminPage = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      const response = await axios.post(`${API_URL}/manual`, {
-        ...formData,
-        source: 'TTN News'
-      });
+      const response = await axios.post(`${API_URL}/manual`, formData);
       setStatus({ type: 'success', message: response.data.message });
-      setFormData({ title: '', url: '', description: '', category: 'Announcements', image: '', secret: formData.secret });
+      setFormData({ 
+        title: '', 
+        url: '', 
+        description: '', 
+        content: '',
+        category: 'Announcements', 
+        image: '', 
+        author: '',
+        source: 'TTN News',
+        secret: formData.secret 
+      });
     } catch (err) {
       setStatus({ type: 'error', message: err.response?.data?.error || 'Failed to add article' });
     } finally {
@@ -48,6 +67,23 @@ const AdminPage = () => {
           <p>Manually publish articles to the TTN News section</p>
         </div>
 
+
+        <div className="affiliate-admin-panel">
+          <div>
+            <span className="affiliate-admin-kicker">Monetization</span>
+            <h3>Affiliate Management</h3>
+            <p>Sponsored travel placements are enabled for the homepage, article pages, sidebar, and footer.</p>
+          </div>
+          <div className="affiliate-admin-grid">
+            {AFFILIATE_PLACEMENTS.map((placement) => (
+              <div key={placement.key} className="affiliate-admin-item">
+                <strong>{placement.partner}</strong>
+                <span>{placement.label}</span>
+                <small>{placement.type.toUpperCase()} · {placement.category}</small>
+              </div>
+            ))}
+          </div>
+        </div>
         <form onSubmit={handleSubmit} className="admin-form">
           <div className="form-group">
             <label>Admin Secret Key</label>
@@ -56,7 +92,7 @@ const AdminPage = () => {
               name="secret" 
               value={formData.secret} 
               onChange={handleChange} 
-              placeholder="Enter your admin token"
+              placeholder="Enter your secret admin key"
               required 
             />
           </div>
@@ -83,25 +119,57 @@ const AdminPage = () => {
               </select>
             </div>
             <div className="form-group">
-              <label>Image URL</label>
+              <label>Author Name / Credit</label>
               <input 
                 type="text" 
-                name="image" 
-                value={formData.image} 
+                name="author" 
+                value={formData.author} 
                 onChange={handleChange} 
-                placeholder="https://example.com/image.jpg"
+                placeholder="Name of the writer"
+              />
+            </div>
+            <div className="form-group">
+              <label>Original Source</label>
+              <input 
+                type="text" 
+                name="source" 
+                value={formData.source} 
+                onChange={handleChange} 
+                placeholder="e.g. CNN, BBC, Reuters"
               />
             </div>
           </div>
 
           <div className="form-group">
-            <label>Description / Content</label>
+            <label>Image URL</label>
+            <input 
+              type="text" 
+              name="image" 
+              value={formData.image} 
+              onChange={handleChange} 
+              placeholder="https://example.com/image.jpg"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Brief Summary (Description)</label>
             <textarea 
               name="description" 
               value={formData.description} 
               onChange={handleChange} 
-              placeholder="Provide a brief summary or the full article content"
-              rows="5"
+              placeholder="Provide a short summary for the news card"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div className="form-group">
+            <label>Full Article Body (HTML Allowed)</label>
+            <textarea 
+              name="content" 
+              value={formData.content} 
+              onChange={handleChange} 
+              placeholder="Paste the entire article here. You can use HTML tags for formatting."
+              rows="15"
             ></textarea>
           </div>
 

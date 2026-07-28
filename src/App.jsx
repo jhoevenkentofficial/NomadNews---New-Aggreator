@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BreakingTicker from './components/BreakingTicker';
 import Sidebar from './components/Sidebar';
+import { AffiliateFooter } from './components/AffiliateWidget';
 import HomePage from './pages/HomePage';
 import RegionPage from './pages/RegionPage';
 import CategoryPage from './pages/CategoryPage';
@@ -19,7 +20,7 @@ function App() {
         <BreakingTicker />
         <div className="main-content">
           <Sidebar />
-          <main style={{ flex: 1, padding: '2rem' }}>
+          <main className="site-main">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/article/:id" element={<ArticlePage />} />
@@ -31,9 +32,14 @@ function App() {
             </Routes>
           </main>
         </div>
+        <AffiliateFooter />
       </div>
     </BrowserRouter>
   );
 }
 
 export default App;
+
+
+
+

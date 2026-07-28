@@ -1,66 +1,63 @@
-# NomadNews Global — News Aggregator
+# NomadNews Global - News Aggregator
 
-A modern travel news aggregator featuring **479+ unique articles** from around the world, covering travel, flights, lifestyle, business, and world news.
+A modern travel news aggregator for travel, flights, lifestyle, business, and world news.
 
 ## Features
-- 🌍 **479+ Unique Articles** from GNews API + RSS feeds
-- ✈️ **Flights Category** with 70+ aviation stories
-- 🔥 **Trending Sidebar** with live top-20 stories and thumbnails
-- 📖 **Pagination** (28 articles/page) across all feeds
-- 🔍 **Functional Search** with full-text results
-- 📅 **Real-time Clock** in the navbar (live date/time)
-- ☰ **Hamburger Menu** with website info and navigation
+- Global travel news aggregation from API and RSS sources
+- Flight and aviation news categories
+- Trending sidebar with live story thumbnails
+- Search across headlines, descriptions, sources, and cities
+- Category, region, source, and article pages
+- Admin publishing workflow
+- PHP shared-hosting fallback API and Node API backend
 
 ## Project Structure
 
 ```
 .
-├── frontend/     ← React + Vite (deploy to Vercel)
-└── backend/      ← Express + NeDB (deploy to Railway or Render)
+├── src/                 React + Vite frontend
+├── api/backend/         Node/Express API backed by Turso
+├── api/php/             PHP API fallback for shared hosting
+├── backend/             Legacy Node backend
+├── public/              Static assets and shared-hosting rewrites
+└── deployment_ready/    Static deployment copy
 ```
 
 ## Local Development
 
-### Backend
-```bash
-cd backend
-npm install
-cp .env.example .env   # Add your NEWS_API_KEY
-node seedNews.js       # Seed the database
-npm run dev            # Starts on port 5000
-```
-
 ### Frontend
 ```bash
-cd frontend
 npm install
-cp .env.example .env   # Set VITE_API_BASE_URL=http://localhost:5000
-npm run dev            # Starts on port 5001
+npm run dev
 ```
+
+### Node API
+```bash
+cd api/backend
+npm install
+npm run dev
+```
+
+The frontend defaults to `http://localhost:5000/api/news` when opened from `localhost` or `127.0.0.1`. For hosted deployments, set `VITE_API_URL` only when you need to point the frontend to a separate API origin.
 
 ## Deployment
 
-### Frontend → Vercel
-1. Import this repo in Vercel
-2. Vercel will auto-detect `vercel.json` and build `frontend/`
-3. Add environment variable: `VITE_API_BASE_URL` = your deployed backend URL
+For static/shared hosting, upload the built frontend with the `api/php` folder and the `.htaccess` rewrite files. The frontend falls back to `/api/php` outside local development.
 
-### Backend → Railway or Render
-1. Create a new project and point to this repo
-2. Set **Root Directory** to `backend`
-3. Set **Start Command** to `node server.js`
-4. Add `NEWS_API_KEY` as an environment variable
-5. Copy the deployed URL and paste into Vercel's `VITE_API_BASE_URL`
+For Node hosting, run `api/backend/server.js` with the required environment variables and point `VITE_API_URL` to that API origin if it is hosted separately.
 
 ## Environment Variables
 
-### Backend (`backend/.env`)
+### Node API
 ```
 PORT=5000
+TURSO_URL=your_turso_database_url
+TURSO_AUTH_TOKEN=your_turso_auth_token
 NEWS_API_KEY=your_gnews_api_key
+ADMIN_TOKEN=optional_admin_secret
 ```
 
-### Frontend (`frontend/.env`)
+### Frontend
 ```
-VITE_API_BASE_URL=http://localhost:5000
+VITE_API_URL=https://your-api-host.example.com
 ```

@@ -7,10 +7,10 @@ dotenv.config({ path: path.join(__dirname, '../../../.env') });
 // Also load the current directory one just in case
 dotenv.config();
 
-// Use POSTGRES_URL or DATABASE_URL for Vercel and Neon compatibility
+// Use POSTGRES_URL or DATABASE_URL for hosted PostgreSQL compatibility
 const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 
-// Disable SSL for localhost, enable it for production/Vercel
+// Disable SSL for localhost, enable it for hosted production databases
 const isLocal = !connectionString || connectionString.includes('localhost');
 
 const pool = new Pool({

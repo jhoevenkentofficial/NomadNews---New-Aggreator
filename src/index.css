@@ -9,7 +9,7 @@
   --accent-hover: #990000;
   --border-color: #eeeeee;
   --header-height: 140px;
-  --sidebar-width: 340px;
+  --sidebar-width: clamp(260px, 21vw, 300px);
   --max-width: 1520px;
   --radius-sm: 0px; /* Sharp corners like InsiderWire */
   --radius-md: 0px;
@@ -33,6 +33,7 @@ body {
   line-height: 1.6;
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4 {
@@ -56,16 +57,24 @@ a {
 
 .main-content {
   display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
   max-width: var(--max-width);
   margin: 0 auto;
   width: 100%;
-  padding: 2rem 1rem;
+  padding: 0.75rem 1.25rem 2rem;
 }
 
 main {
   flex: 1;
-  padding: 0 1.5rem;
+  min-width: 0;
+  padding: 0;
 }
+
+.site-main {
+  padding-top: 0.75rem;
+}
+
 
 /* Common UI Elements */
 .loader-container {
@@ -92,8 +101,24 @@ main {
 @media (max-width: 1024px) {
   .main-content {
     flex-direction: column;
+    padding: 1rem;
   }
   main {
     padding: 0;
   }
 }
+
+@media (max-width: 768px) {
+  :root {
+    --header-height: 100px;
+  }
+  .main-content {
+    padding: 0.5rem;
+  }
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.8rem; }
+  h3 { font-size: 1.4rem; }
+}
+
+
+

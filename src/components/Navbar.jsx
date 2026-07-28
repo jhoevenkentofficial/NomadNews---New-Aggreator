@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, Landmark, Plane, Hotel, Globe, Flame, MapPin } from 'lucide-react';
+import { Search, Menu, X, Landmark, Plane, Hotel, Globe, Flame, MapPin, Home, Lock } from 'lucide-react';
 import './Navbar.css';
 
 const Navbar = () => {
   const categories = [
-    'Breaking News', 'Airport News', 'Popular Destinations', 'Major Cities', 'Travel News'
+    'Breaking News', 'Travel News', 'Major Cities', 'Popular Destinations'
   ];
 
   const regions = [
@@ -49,9 +49,9 @@ const Navbar = () => {
   const getCategoryIcon = (cat) => {
     switch (cat) {
       case 'Breaking News': return <Flame size={16} />;
-      case 'Airport News': return <Plane size={16} />;
-      case 'Popular Destinations': return <MapPin size={16} />;
+      case 'Travel News': return <Plane size={16} />;
       case 'Major Cities': return <Landmark size={16} />;
+      case 'Popular Destinations': return <MapPin size={16} />;
       default: return <Globe size={16} />;
     }
   };
@@ -78,7 +78,7 @@ const Navbar = () => {
             </button>
             <Link to="/" className="navbar-brand-centered">
               <div className="logo-wrapper">
-                <img src="/assets/images/logo.png" alt="TRAVELTEW NEWS" className="navbar-logo-img" />
+                <img src="/assets/images/logo.jpg" alt="TRAVELTEW NEWS" className="navbar-logo-img" />
               </div>
               <div className="navbar-logo-text">
                 <h1 className="brand-name">TRAVELTEW<span>NEWS</span></h1>
@@ -126,19 +126,6 @@ const Navbar = () => {
                   </Link>
                 </li>
               ))}
-              <li className="nav-dropdown-item">
-                <span className="nav-cat-link">
-                  <Globe size={16} />
-                  <span>Regions</span>
-                </span>
-                <ul className="dropdown-menu">
-                  {regions.map(region => (
-                    <li key={region}>
-                      <Link to={`/region/${encodeURIComponent(region)}`}>{region}</Link>
-                    </li>
-                  ))}
-                </ul>
-              </li>
             </ul>
           </div>
         </div>
@@ -148,7 +135,7 @@ const Navbar = () => {
       <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
         <div className="mobile-menu-header">
           <div className="mobile-logo-container">
-            <img src="/assets/images/logo.png" alt="TRAVELTEW NEWS" className="mobile-logo-img" />
+            <img src="/assets/images/logo.jpg" alt="TRAVELTEW NEWS" className="mobile-logo-img" />
             <h2 className="mobile-logo">TRAVELTEW<span>NEWS</span></h2>
           </div>
           <button className="mobile-close-btn" onClick={() => setMenuOpen(false)}>
@@ -157,44 +144,39 @@ const Navbar = () => {
         </div>
 
         <div className="mobile-menu-content">
-          <NavLink to="/" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Home</NavLink>
+          <NavLink to="/" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>
+            <Home size={20} />
+            <span>Home</span>
+          </NavLink>
           
           <div className="mobile-section">
-            <h3 className="mobile-section-title">News Sections</h3>
-            <div className="mobile-category-grid">
+            <h3 className="mobile-section-title">Explore Categories</h3>
+            <div className="mobile-category-list">
               {categories.map(cat => (
                 <Link
                   key={cat}
                   to={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="mobile-category-chip"
+                  className="mobile-category-item"
                   onClick={() => setMenuOpen(false)}
                 >
-                  {cat}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="mobile-section">
-            <h3 className="mobile-section-title">Regions</h3>
-            <div className="mobile-nav">
-              {regions.map(region => (
-                <Link
-                  key={region}
-                  to={`/region/${encodeURIComponent(region)}`}
-                  className="mobile-nav-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {region}
+                  <div className="cat-icon-circle">
+                    {getCategoryIcon(cat)}
+                  </div>
+                  <span>{cat}</span>
                 </Link>
               ))}
             </div>
           </div>
 
           <div className="mobile-footer-actions">
-            <NavLink to="/admin" className="mobile-nav-item login-item" onClick={() => setMenuOpen(false)}>Admin Login</NavLink>
-            <p className="mobile-tagline">Your #1 Travel News Source Worldwide</p>
-            <p className="copyright">© 2026 TravelTew News</p>
+            <NavLink to="/admin" className="mobile-nav-item login-item" onClick={() => setMenuOpen(false)}>
+              <Lock size={18} />
+              <span>Admin Dashboard</span>
+            </NavLink>
+            <div className="mobile-menu-footer">
+              <p className="mobile-tagline">Worldwide Travel News</p>
+              <p className="copyright">© 2026 TRAVELTEW NEWS</p>
+            </div>
           </div>
         </div>
       </div>

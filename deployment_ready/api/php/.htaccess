@@ -1,34 +1,26 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /api/php/
+RewriteEngine On
 
-    # Handle /latest
-    RewriteRule ^latest$ api.php?route=latest [QSA,L]
-    
-    # Handle /category/:name
-    RewriteRule ^category/(.*)$ api.php?route=category&category=$1 [QSA,L,B]
-    
-    # Handle /region/:name
-    RewriteRule ^region/(.*)$ api.php?route=region&region=$1 [QSA,L,B]
-    
-    # Handle /source/:name
-    RewriteRule ^source/(.*)$ api.php?route=source&source=$1 [QSA,L,B]
-    
-    # Handle /search
-    RewriteRule ^search$ api.php?route=search [QSA,L]
-    
-    # Handle /trending
-    RewriteRule ^trending$ api.php?route=trending [QSA,L]
-    
-    # Handle /sources
-    RewriteRule ^sources$ api.php?route=sources [QSA,L]
-    
-    # Handle /health
-    RewriteRule ^health$ api.php?route=health [QSA,L]
-    
-    # Handle /manual (Admin article submit)
-    RewriteRule ^manual$ api.php?route=manual [QSA,L]
+# Ensure Authorization header is passed to PHP
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Handle /fetch (Manual trigger)
-    RewriteRule ^fetch$ fetch.php?run=1 [QSA,L]
-</IfModule>
+# 1. Handle Article by ID
+RewriteRule ^article/([^/]+)/?$ api.php?route=article&id=$1 [QSA,L]
+
+# 2. Handle Category
+RewriteRule ^category/([^/]+)/?$ api.php?route=category&category=$1 [QSA,L]
+
+# 3. Handle Region
+RewriteRule ^region/([^/]+)/?$ api.php?route=region&region=$1 [QSA,L]
+
+# 4. Handle Source
+RewriteRule ^source/([^/]+)/?$ api.php?route=source&source=$1 [QSA,L]
+
+# 5. Handle Other Named Routes (latest, trending, sources, search, diag, manual, fetch, health)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ api.php?route=$1 [QSA,L]
+
+# Fallback
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . api.php [L]

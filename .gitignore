@@ -32,3 +32,9 @@ api/backend/.env
 backend/data/news.db
 backend/news.db
 backend/data/*.json
+
+# Local debugging artifacts
+*.log
+chrome-*-profile*/
+chrome-admin-*.html
+chrome-admin-*.log

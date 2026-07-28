@@ -1,15 +1,13 @@
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
+RewriteEngine On
+RewriteBase /
 
-  # Handle API requests - don't redirect to index.html
-  # This allows api/php/ directory to handle its own routing
-  RewriteCond %{REQUEST_URI} ^/api/php/ [NC]
-  RewriteRule ^ - [L]
+# 1. STRONGLY EXEMPT API - Do not let GoDaddy redirect these
+RewriteRule ^api/php/(.*)$ api/php/$1 [QSA,L]
 
-  # SPA Routing: Redirect all non-file/non-directory requests to index.html
-  RewriteRule ^index\.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
-</IfModule>
+# 2. Allow existing files and directories to be served directly
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 3. SPA Routing: Send everything else to index.html
+RewriteRule . /index.html [L]

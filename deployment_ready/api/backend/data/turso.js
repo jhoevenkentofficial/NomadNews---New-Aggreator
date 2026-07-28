@@ -48,7 +48,8 @@ const initDB = async () => {
     const migrationColumns = [
       { name: 'author', type: 'TEXT' },
       { name: 'city', type: 'TEXT' },
-      { name: 'is_breaking', type: 'BOOLEAN DEFAULT 0' }
+      { name: 'is_breaking', type: 'BOOLEAN DEFAULT 0' },
+      { name: 'content', type: "TEXT DEFAULT ''" }
     ];
 
     for (const col of migrationColumns) {

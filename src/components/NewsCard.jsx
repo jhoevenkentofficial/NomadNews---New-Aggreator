@@ -13,6 +13,25 @@ const NewsCard = ({ article, variant = 'standard' }) => {
     return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
+  // Detect if this article is from TTN / TRAVELTEW (internal)
+  const isTTNSource = (src) => {
+    if (!src) return true; // no source = internal
+    const s = src.toLowerCase();
+    return s.includes('traveltew') || s.includes('ttn news') || s.includes('ttn') || s === 'admin';
+  };
+
+  const cleanSource = (name) => {
+    if (!name || isTTNSource(name)) return 'TTN News';
+    // Known all-caps brands
+    const upperBrands = ['cnn', 'bbc', 'nbc', 'abc', 'cbs', 'npr', 'ap', 'afp'];
+    let clean = name.replace(/^www\./i, '');
+    clean = clean.split('.')[0];
+    if (upperBrands.includes(clean.toLowerCase())) return clean.toUpperCase();
+    return clean.charAt(0).toUpperCase() + clean.slice(1);
+  };
+
+  const isExternal = !isTTNSource(source);
+
   const defaultImage = `https://picsum.photos/seed/${encodeURIComponent(title)}/800/600`;
   const articleLink = `/article/${id}`;
 
@@ -25,12 +44,15 @@ const NewsCard = ({ article, variant = 'standard' }) => {
         </div>
         <div className="hero-content">
           <div className="meta-row">
-            <span className="author-tag">By {author || 'TRAVELTEW Staff'}</span>
+            <span className="author-tag">By {cleanSource(source)}</span>
+            {isExternal && <span className="source-tag">Source: {cleanSource(source)}</span>}
           </div>
           <h2 className="hero-title">{title}</h2>
-          <p className="hero-desc">{description}</p>
+          <p className="hero-desc">
+            {description?.split('\n')[0]}
+          </p>
           <div className="card-footer">
-            <span className="source-label">TRAVELTEW Exclusive</span>
+            <span className="repub-label">Via TTN NEWS Wire</span>
             <span className="date-tag">{formatDate(published_at)}</span>
           </div>
         </div>
@@ -45,7 +67,7 @@ const NewsCard = ({ article, variant = 'standard' }) => {
           <span className="list-category">{category}</span>
           <h4 className="list-title">{title}</h4>
           <div className="list-footer">
-            <span className="list-source">TRAVELTEW NEWS</span>
+            <span className="list-source">{isExternal ? `Source: ${cleanSource(source)}` : 'TTN News'}</span>
             <span className="list-date">{formatDate(published_at)}</span>
           </div>
         </div>
@@ -61,12 +83,15 @@ const NewsCard = ({ article, variant = 'standard' }) => {
       </div>
       <div className="standard-content">
         <div className="meta-row">
-          <span className="author-tag">By {author || 'TRAVELTEW Staff'}</span>
+          <span className="author-tag">By {cleanSource(source)}</span>
           <span className="category-tag">{category}</span>
         </div>
         <h3 className="standard-title">{title}</h3>
+        <p className="standard-desc">
+          {description?.split('\n')[0]?.substring(0, 120)}...
+        </p>
         <div className="card-footer">
-          <span className="source-label">TRAVELTEW NEWS</span>
+          <span className="source-label">{isExternal ? `Source: ${cleanSource(source)}` : 'TTN News'}</span>
           <span className="date-tag">{formatDate(published_at)}</span>
         </div>
       </div>

@@ -1,21 +1,19 @@
 const getBaseUrl = () => {
-  // If we have a VITE_API_URL set in environment variables (Netlify/Vercel)
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL + '/api/news';
+  const configuredUrl = import.meta.env.VITE_API_URL;
+
+  if (configuredUrl) {
+    const cleanUrl = configuredUrl.replace(/\/+$/, '');
+    return cleanUrl.endsWith('/api/news') ? cleanUrl : `${cleanUrl}/api/news`;
   }
 
-  // Fallback for local development
-  if (window.location.origin.includes('localhost')) {
-    return 'http://localhost:5000/api/news';
-  }
-  
-  // Default to PHP backend for GoDaddy Shared Hosting
-  const url = '/api/php';
-  console.log('API_URL initialized as:', url);
   if (typeof window !== 'undefined') {
-    window.API_DEBUG = { url, origin: window.location.origin };
+    const { hostname } = window.location;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://127.0.0.1:5000/api/news';
+    }
   }
-  return url;
+
+  return '/api/php';
 };
 
 export const API_URL = getBaseUrl();
