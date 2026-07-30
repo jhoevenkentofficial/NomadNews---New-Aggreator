@@ -214,7 +214,7 @@ try {
             }
 
             $secret = trim($body['secret'] ?? '');
-            if ($secret !== 'TRAVELTEW_2026') {
+            if ($secret === '' || $secret !== ADMIN_TOKEN) {
                 http_response_code(403);
                 echo json_encode(['error' => 'Invalid admin secret']);
                 break;

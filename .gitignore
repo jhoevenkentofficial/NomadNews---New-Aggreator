@@ -38,3 +38,6 @@ backend/data/*.json
 chrome-*-profile*/
 chrome-admin-*.html
 chrome-admin-*.log
+api/php/config.local.php
+FTP_UPLOAD_READY/api/php/config.local.php
+deployment_ready/api/php/config.local.php

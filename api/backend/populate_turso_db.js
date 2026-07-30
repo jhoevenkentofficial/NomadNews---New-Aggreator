@@ -1,27 +1,29 @@
 const { createClient } = require('@libsql/client');
-const { fetchAndSaveNews } = require('./services/newsFetcher');
+require('dotenv').config();
 
-const url = 'libsql://nomad-news-randompro.aws-us-east-1.turso.io';
-const authToken = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3NzQxMjI2NTQsImlkIjoiMDE5ZDExZjEtMGEwMS03ODcwLThkODMtZjIwMWNmNzExNzhiIiwicmlkIjoiNjlkZWNmNTEtZjg4Mi00OWVhLWE3ZmEtMTY5ZjAxMjQwOGU0In0.zCezOAqItpOP8SNTRJgPppO-SHz795-q_AAVpV_tgAZX2NVxHuJGRRilR0nvoXPztaM8tUSPw-udYgH69rI8Aw';
+const url = process.env.TURSO_URL;
+const authToken = process.env.TURSO_AUTH_TOKEN;
 
-// Standalone client logic
+if (!url || !authToken) {
+  console.error('Missing TURSO_URL or TURSO_AUTH_TOKEN. Add them to .env before populating Turso.');
+  process.exit(1);
+}
+
 process.env.TURSO_URL = url;
 process.env.TURSO_AUTH_TOKEN = authToken;
 
-async function run() {
-  try {
-    console.log('Connecting to REMOTE Turso Standalone...');
-    const { initDB } = require('./data/turso');
-    await initDB();
+const { initDB } = require('./data/turso');
+const { fetchAndSaveNews } = require('./services/newsFetcher');
 
-    console.log('Fetching News to Cloud...');
+(async () => {
+  try {
+    console.log('Initializing DB...');
+    await initDB();
+    console.log('Fetching news into Turso...');
     await fetchAndSaveNews();
-    console.log('SUCCESS: News populated to cloud!');
-    process.exit(0);
+    console.log('Done.');
   } catch (err) {
     console.error('CRITICAL ERROR:', err.message);
     process.exit(1);
   }
-}
-
-run();
+})();

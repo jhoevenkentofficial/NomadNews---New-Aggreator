@@ -27,7 +27,7 @@ const postBreakingNewsToX = async () => {
 
     for (const row of result.rows) {
       const { id, title, source } = row;
-      const articleUrl = `${process.env.FRONTEND_URL}/article/${id}`;
+      const articleUrl = `${process.env.PUBLIC_SITE_URL || "http://127.0.0.1:5173"}/article/${id}`;
       
       const tweetText = `🚨 BREAKING: ${title}\n\nRead more on TravelTew News: ${articleUrl}\n\n#TTN #TravelNews #${source.replace(/\s+/g, '')}`;
 

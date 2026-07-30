@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const newsRoutes = require('./routes/news');
 const { initDB, client } = require('./data/turso');
+const { startCronJob } = require('./cron/fetchScheduler');
 
 const app = express();
 const dbReady = initDB();
@@ -98,5 +99,9 @@ if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+
+    if (process.env.ENABLE_NEWS_CRON === 'true') {
+      startCronJob();
+    }
   });
 }

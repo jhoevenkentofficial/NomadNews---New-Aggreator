@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { API_URL } from '../config/api';
 import './BreakingTicker.css';
 
@@ -13,7 +13,7 @@ const BreakingTicker = () => {
                 return res.json();
             })
             .then(data => setTrending(data.articles || []))
-            .catch(err => console.error('Ticker error:', err));
+            .catch(err => (import.meta.env.VITE_DEBUG_CLIENT === 'true') && console.warn('Ticker error:', err));
     }, []);
 
     const formatCategory = (slug) => {

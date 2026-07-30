@@ -1,0 +1,26 @@
+RewriteEngine On
+
+# Ensure Authorization header is passed to PHP
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# 1. Handle Article by ID
+RewriteRule ^article/([^/]+)/?$ api.php?route=article&id=$1 [QSA,L]
+
+# 2. Handle Category
+RewriteRule ^category/([^/]+)/?$ api.php?route=category&category=$1 [QSA,L]
+
+# 3. Handle Region
+RewriteRule ^region/([^/]+)/?$ api.php?route=region&region=$1 [QSA,L]
+
+# 4. Handle Source
+RewriteRule ^source/([^/]+)/?$ api.php?route=source&source=$1 [QSA,L]
+
+# 5. Handle Other Named Routes (latest, trending, sources, search, diag, manual, fetch, health)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ api.php?route=$1 [QSA,L]
+
+# Fallback
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . api.php [L]

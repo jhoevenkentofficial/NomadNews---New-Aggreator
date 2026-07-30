@@ -1,27 +1,66 @@
 const { createClient } = require('@libsql/client');
 require('dotenv').config();
 
-let url = (process.env.TURSO_URL || process.env.DATABASE_URL || '').trim();
+let url = (process.env.TURSO_URL || '').trim();
 const authToken = (process.env.TURSO_AUTH_TOKEN || '').trim();
 
-// Support for legacy DATABASE_URL which might have sslmode (unsupported by Turso)
 if (url.includes('?')) {
   url = url.split('?')[0];
 }
 
-const client = createClient({
+const rawClient = createClient({
   url: url || 'file:local.db',
   authToken: authToken,
 });
 
 let isInitialized = false;
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const isTransientDbError = (error) => {
+  const message = String(error?.message || error || '').toLowerCase();
+  return [
+    'enotfound',
+    'econnreset',
+    'econnrefused',
+    'etimedout',
+    'network',
+    'fetch failed',
+    'temporarily unavailable',
+    'timeout'
+  ].some((needle) => message.includes(needle));
+};
+
+const executeWithRetry = async (statement, options) => {
+  const maxAttempts = 3;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await rawClient.execute(statement, options);
+    } catch (error) {
+      if (attempt === maxAttempts || !isTransientDbError(error)) {
+        throw error;
+      }
+
+      await sleep(250 * attempt);
+    }
+  }
+};
+
+const client = new Proxy(rawClient, {
+  get(target, prop) {
+    if (prop === 'execute') return executeWithRetry;
+    const value = target[prop];
+    return typeof value === 'function' ? value.bind(target) : value;
+  }
+});
+
 const initDB = async () => {
   if (isInitialized) return client;
 
   try {
-    if (!url && !process.env.DATABASE_URL) {
-      console.warn("TURSO_URL or DATABASE_URL is missing from environment variables. Falling back to local file.");
+    if (!url) {
+      console.warn("TURSO_URL is missing from environment variables. Falling back to local file.");
     }
 
     // Create articles table using SQLite syntax
@@ -60,10 +99,12 @@ const initDB = async () => {
         // Catch error if column already exists
       }
     }
-    
+
     // Create necessary indexes
     await client.execute(`CREATE INDEX IF NOT EXISTS idx_articles_category ON articles(category)`);
     await client.execute(`CREATE INDEX IF NOT EXISTS idx_articles_region ON articles(region)`);
+    await client.execute(`CREATE INDEX IF NOT EXISTS idx_articles_source ON articles(source)`);
+    await client.execute(`CREATE INDEX IF NOT EXISTS idx_articles_region_source ON articles(region, source)`);
     await client.execute(`CREATE INDEX IF NOT EXISTS idx_articles_trending ON articles(trending)`);
     await client.execute(`CREATE INDEX IF NOT EXISTS idx_articles_published_at ON articles(published_at DESC)`);
 

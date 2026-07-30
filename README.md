@@ -38,7 +38,7 @@ npm install
 npm run dev
 ```
 
-The frontend defaults to `http://localhost:5000/api/news` when opened from `localhost` or `127.0.0.1`. For hosted deployments, set `VITE_API_URL` only when you need to point the frontend to a separate API origin.
+The frontend defaults to `http://127.0.0.1:5000/api/news` when opened from `localhost` or `127.0.0.1`. For hosted deployments, set `VITE_API_URL` only when you need to point the frontend to a separate API origin.
 
 ## Deployment
 

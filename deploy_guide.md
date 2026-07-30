@@ -7,7 +7,7 @@ This guide provides the **complete, step-by-step details** for deploying your la
 ## 📂 1. Locate Your Deployment Package
 I have prepared a dedicated folder that contains everything ready for production.
 - **Folder Path**: `News Aggreator/deployment_ready/`
-- **What's Inside**: 
+- **What's Inside**:
   - `index.html`, `assets/`, `favicon.png` (The Frontend)
   - `api/php/` (The Backend API)
   - `.htaccess` (Server configurations)
@@ -68,7 +68,7 @@ To keep your news fresh without manual clicking, set up a **Cron Job** in cPanel
 ## 🔐 6. Admin Portal
 To manually publish your own special reports:
 1. Go to `https://yourdomain.com/admin`.
-2. Use the **Secret Key** defined in your system: `TRAVELTEW_2026`.
+2. Use the **Secret Key** defined in your system: `ADMIN_TOKEN from your hosting environment`.
 3. Use the new **Full Article Body** field to paste your complete stories.
 
 ---

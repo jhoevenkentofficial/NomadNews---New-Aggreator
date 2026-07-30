@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useParams, Link } from 'react-router';
 import axios from 'axios';
 import { API_URL } from '../config/api';
 import { AffiliateWidget } from '../components/AffiliateWidget';
@@ -20,7 +20,7 @@ const ArticlePage = () => {
         const res = await axios.get(`${API_URL}/article/${id}`);
         setArticle(res.data);
       } catch (err) {
-        console.error('Error fetching article:', err);
+        (import.meta.env.VITE_DEBUG_CLIENT === 'true') && console.warn('Error fetching article:', err);
         setError('Article not found or system error.');
       } finally {
         setLoading(false);
@@ -45,6 +45,7 @@ const ArticlePage = () => {
   };
 
   const isExternal = article && !isTTNSource(article.source);
+  const safeArticleContent = useMemo(() => sanitizeArticleHtml(article?.content || ''), [article?.content]);
 
   if (loading) {
     return <div className="loader-container"><div className="loader"></div></div>;
@@ -77,9 +78,9 @@ const ArticlePage = () => {
               <span>{Math.max(1, Math.ceil((article.content?.length || article.description?.length || 0) / 1000))} min read</span>
             </div>
           </div>
-          
+
           <h1 className="article-title">{article.title}</h1>
-          
+
           <div className="article-byline-premium">
             <div className="author-info">
               <div className="author-avatar">
@@ -90,7 +91,7 @@ const ArticlePage = () => {
                 <span className="author-name">{article.author || 'TTN Staff Reporter'}</span>
               </div>
             </div>
-            
+
             <div className="source-info">
               <span className="source-label">Source</span>
               <span className={`source-value ${article.source !== 'TTN News' ? 'external' : ''}`}>
@@ -121,15 +122,15 @@ const ArticlePage = () => {
 
           <AffiliateWidget slot="article" title="Useful Travel Tools for This Story" />
 
-          {article.content && article.content.trim().length > (article.description || '').length + 200 ? (
+          {safeArticleContent && safeArticleContent.trim().length > (article.description || '').length + 200 ? (
             <div className="article-body-wrapper">
               <div className="content-badge-premium">
                 <CheckCircle2 size={16} />
                 <span>Verified Full Report</span>
               </div>
-              <div 
-                className="article-full-body" 
-                dangerouslySetInnerHTML={{ __html: article.content }} 
+              <div
+                className="article-full-body"
+                dangerouslySetInnerHTML={{ __html: safeArticleContent }}
               />
             </div>
           ) : (
@@ -145,16 +146,16 @@ const ArticlePage = () => {
           )}
 
           <div className="article-actions">
-            <a 
-              href={article.url} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn-primary"
             >
               Verify Source Integrity
               <ExternalLink size={18} />
             </a>
-            
+
             <button onClick={handleShare} className="btn-secondary">
               <Share2 size={18} />
               {copied ? 'Link Copied!' : 'Share Story'}

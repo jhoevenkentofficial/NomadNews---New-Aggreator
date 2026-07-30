@@ -239,10 +239,18 @@
 
 .affiliate-loading-note {
   display: grid;
-  min-height: 220px;
+  min-height: 180px;
   place-items: center;
   color: #777;
   font-size: 0.82rem;
+}
+
+.affiliate-script-loaded {
+  min-height: 0;
+}
+
+.affiliate-script-loaded .affiliate-loading-note {
+  display: none;
 }
 
 .affiliate-listingMid .placement-klook { grid-column: span 2; }
@@ -258,7 +266,7 @@
 .affiliate-listingMid .placement-compensair { grid-column: span 2; }
 
 .placement-klook .affiliate-script-slot,
-.placement-klook .affiliate-loading-note { min-height: 430px; }
+.placement-klook .affiliate-loading-note { min-height: 260px; }
 .placement-kiwi-flights .affiliate-script-slot,
 .placement-kiwi-flights .affiliate-loading-note { min-height: 390px; }
 .placement-getrentacar .affiliate-script-slot,
@@ -296,16 +304,59 @@
   font-size: 1.02rem;
   line-height: 1.25;
 }
+.affiliate-link-image {
+  grid-column: 1 / -1;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 8.2;
+  object-fit: cover;
+  border: 1px solid #e8e8e8;
+  background: #eee;
+}
+
+
+.affiliate-link-card p,
+.affiliate-link-card small {
+  grid-column: 1 / -1;
+}
+
+.affiliate-link-card p {
+  margin: 0.1rem 0 0;
+  color: #555;
+  font-size: 0.8rem;
+  line-height: 1.38;
+}
+
+.affiliate-link-card small {
+  color: #777;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
 
 .affiliate-link-card em {
   grid-column: 1 / 2;
   color: var(--accent);
 }
 
+.affiliate-link-card.has-details {
+  gap: 0.28rem 0.85rem;
+  align-items: start;
+  min-height: 132px;
+}
+
 .affiliate-link-card svg {
   grid-row: 1 / span 3;
   grid-column: 2 / 3;
   color: var(--accent);
+}
+
+.affiliate-link-card.has-details svg {
+  grid-row: 1 / span 5;
+  align-self: start;
+  margin-top: 0.12rem;
 }
 
 .affiliate-article {
@@ -398,8 +449,22 @@
   padding: 0.85rem;
 }
 
+.affiliate-sidebar .affiliate-link-card.has-details {
+  min-height: 128px;
+  padding: 0.85rem 0.9rem;
+}
+
 .affiliate-sidebar .affiliate-link-card strong {
   font-size: 0.95rem;
+}
+
+.affiliate-sidebar .affiliate-link-card p {
+  font-size: 0.75rem;
+  line-height: 1.34;
+}
+
+.affiliate-sidebar .affiliate-link-card small {
+  font-size: 0.61rem;
 }
 
 
@@ -479,7 +544,7 @@
   }
 
   .placement-klook .affiliate-script-slot,
-  .placement-klook .affiliate-loading-note { min-height: 500px; }
+  .placement-klook .affiliate-loading-note { min-height: 300px; }
 
   .placement-kiwi-flights .affiliate-script-slot,
   .placement-kiwi-flights .affiliate-loading-note { min-height: 460px; }
@@ -487,4 +552,56 @@
 
 
 
+
+
+@media (min-width: 769px) {
+  .affiliate-widget.leaderboard .affiliate-iframe-frame { --leaderboard-scale: min(1.58, calc((100vw - 360px) / 728)); }
+}
+
+@media (min-width: 1200px) {
+  .affiliate-widget.leaderboard .affiliate-iframe-frame { --leaderboard-scale: 1.55; }
+}
+
+@media (max-width: 768px) {
+  .affiliate-widget.leaderboard .affiliate-iframe-frame {
+    min-height: 90px;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+
+  .affiliate-widget.leaderboard .affiliate-iframe-frame iframe {
+    transform: none;
+  }
+}
+/* Tighten third-party Klook widget: the injected partner block includes empty vertical space. */
+.placement-klook .affiliate-script-slot {
+  max-height: 390px;
+  min-height: 360px;
+  overflow: hidden;
+}
+
+.placement-klook .affiliate-script-slot > div,
+.placement-klook .affiliate-script-slot > iframe {
+  margin-top: 0 !important;
+}
+
+.placement-klook .affiliate-script-loaded {
+  min-height: 360px;
+}
+
+.placement-klook .affiliate-card,
+.affiliate-listingMid .placement-klook {
+  align-self: start;
+}
+
+@media (max-width: 768px) {
+  .placement-klook .affiliate-script-slot {
+    max-height: 430px;
+    min-height: 390px;
+  }
+
+  .placement-klook .affiliate-script-loaded {
+    min-height: 390px;
+  }
+}
 

@@ -1,39 +1,42 @@
 const { createClient } = require('@libsql/client');
+require('dotenv').config();
 
-const url = 'libsql://nomad-news-randompro.aws-us-east-1.turso.io';
-const authToken = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3NzQxMjI2NTQsImlkIjoiMDE5ZDExZjEtMGEwMS03ODcwLThkODMtZjIwMWNmNzExNzhiIiwicmlkIjoiNjlkZWNmNTEtZjg4Mi00OWVhLWE3ZmEtMTY5ZjAxMjQwOGU0In0.zCezOAqItpOP8SNTRJgPppO-SHz795-q_AAVpV_tgAZX2NVxHuJGRRilR0nvoXPztaM8tUSPw-udYgH69rI8Aw';
+const url = process.env.TURSO_URL;
+const authToken = process.env.TURSO_AUTH_TOKEN;
+
+if (!url || !authToken) {
+  console.error('Missing TURSO_URL or TURSO_AUTH_TOKEN. Add them to .env before running migration.');
+  process.exit(1);
+}
+
+const client = createClient({ url, authToken });
 
 async function migrate() {
-  const client = createClient({ url, authToken });
-  
-  console.log('Starting migration...');
-  
   try {
-    const columnsToAdd = [
+    const columns = [
       { name: 'author', type: 'TEXT' },
       { name: 'city', type: 'TEXT' },
       { name: 'is_breaking', type: 'BOOLEAN DEFAULT 0' },
-      { name: 'posted_to_x', type: 'BOOLEAN DEFAULT 0' }
+      { name: 'content', type: "TEXT DEFAULT ''" }
     ];
 
-    for (const col of columnsToAdd) {
+    for (const col of columns) {
       try {
         await client.execute(`ALTER TABLE articles ADD COLUMN ${col.name} ${col.type}`);
         console.log(`Added column: ${col.name}`);
       } catch (err) {
-        if (err.message.includes('duplicate column name')) {
-          console.log(`Column ${col.name} already exists.`);
+        if (err.message.includes('duplicate column')) {
+          console.log(`Column already exists: ${col.name}`);
         } else {
           console.error(`Error adding ${col.name}:`, err.message);
         }
       }
     }
-    
-    console.log('Migration completed successfully.');
+    console.log('Migration complete');
   } catch (err) {
     console.error('Migration failed:', err.message);
   } finally {
-    process.exit(0);
+    client.close();
   }
 }
 

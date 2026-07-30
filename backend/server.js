@@ -5,19 +5,16 @@ const http = require('http');
 const { Server } = require('socket.io');
 const newsRoutes = require('./routes/news');
 const { startCronJob } = require('./cron/fetchScheduler');
-const connectDB = require('./data/mongodb');
 const { fetchAndSaveNews } = require('./services/newsFetcher');
 
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN || "http://127.0.0.1:5173",
     methods: ["GET", "POST"]
   }
 });
@@ -32,7 +29,7 @@ app.use(express.json());
 app.use('/api/news', newsRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => res.json({ status: 'ok', db: 'mongodb' }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', db: 'local' }));
 
 // Manual Fetch Trigger
 app.get('/api/news/fetch', async (req, res) => {

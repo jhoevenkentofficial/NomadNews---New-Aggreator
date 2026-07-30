@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router';
 import axios from 'axios';
 import { API_URL } from '../config/api';
 import WireDashboard from '../components/WireDashboard';
@@ -26,7 +26,7 @@ const SearchPage = () => {
         const res = await axios.get(`${API_URL}/search?q=${encodeURIComponent(query)}&limit=60`);
         setArticles(res.data.articles || []);
       } catch (err) {
-        console.error('Error searching news:', err);
+        (import.meta.env.VITE_DEBUG_CLIENT === 'true') && console.warn('Error searching news:', err);
         setError('Unable to complete this search right now.');
       } finally {
         setLoading(false);

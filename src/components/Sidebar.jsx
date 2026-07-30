@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import axios from 'axios';
 import { API_URL } from '../config/api';
 import { AffiliateWidget } from './AffiliateWidget';
@@ -28,7 +28,7 @@ const Sidebar = () => {
         setTrending(trendingRes.data.articles || []);
         setSources(sourcesRes.data || {});
       } catch (err) {
-        console.error('Error fetching sidebar data:', err);
+        (import.meta.env.VITE_DEBUG_CLIENT === 'true') && console.warn('Error fetching sidebar data:', err);
       } finally {
         setLoading(false);
       }
@@ -61,7 +61,7 @@ const Sidebar = () => {
         window.location.reload();
       }, 3000);
     } catch (err) {
-      console.error('Error triggering manual refresh:', err);
+      (import.meta.env.VITE_DEBUG_CLIENT === 'true') && console.warn('Error triggering manual refresh:', err);
       setRefreshing(false);
     }
   };

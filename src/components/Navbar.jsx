@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router';
 import { Search, Menu, X, Landmark, Plane, Hotel, Globe, Flame, MapPin, Home, Lock } from 'lucide-react';
 import './Navbar.css';
 

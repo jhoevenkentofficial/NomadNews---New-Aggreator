@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import axios from 'axios';
 import { API_URL } from '../config/api';
 import WireDashboard from '../components/WireDashboard';
@@ -18,7 +18,7 @@ const CategoryPage = () => {
         const res = await axios.get(`${API_URL}/category/${encodeURIComponent(categoryName)}?limit=60`);
         setArticles(res.data.articles);
       } catch (err) {
-        console.error('Error fetching category news:', err);
+        (import.meta.env.VITE_DEBUG_CLIENT === 'true') && console.warn('Error fetching category news:', err);
         setError(`Unable to load news for ${categoryName}.`);
       } finally {
         setLoading(false);

@@ -5,6 +5,18 @@ const { fetchAndSaveNews } = require('../services/newsFetcher');
 
 const DEFAULT_LIMIT = 18;
 const MAX_LIMIT = 100;
+const SOURCES_CACHE_TTL_MS = 10 * 60 * 1000;
+let sourcesCache = { expiresAt: 0, payload: null };
+const DEFAULT_SOURCES_BY_REGION = {
+  'Africa': ['Tourism Update', 'Simple Flying', 'Skift', 'Condé Nast Traveler'],
+  'Asia': ['TTG Asia', 'Travel News Asia', 'The Straits Times', 'Bangkok Post'],
+  'Europe': ['Travel Weekly UK', 'The Guardian Travel', 'Simple Flying', 'Skift'],
+  'Global': ['TRAVELTEW NEWS', 'Condé Nast Traveler', 'Simple Flying', 'Skift'],
+  'Middle East': ['Hotelier Middle East', 'Arab News', 'Al Jazeera', 'Simple Flying'],
+  'North America': ['TravelPulse', 'Travel Weekly', 'New York Post', 'Skift'],
+  'Oceania': ['Karryon', 'Travel Weekly Australia', 'TravelTalk', 'Simple Flying'],
+  'South America': ['Mercopress', 'Condé Nast Traveler', 'Simple Flying', 'Skift']
+};
 
 const toInteger = (value, fallback) => {
   const parsed = Number.parseInt(value, 10);
@@ -200,27 +212,18 @@ router.get('/trending', async (req, res) => {
 });
 
 router.get('/sources', async (req, res) => {
-  try {
-    const result = await client.execute(`
-      SELECT DISTINCT source, COALESCE(region, 'Global') as region
-      FROM articles
-      WHERE source IS NOT NULL AND source != ''
-      ORDER BY region, source
-    `);
-    const sourcesByRegion = {};
-
-    result.rows.forEach((row) => {
-      const region = row.region || 'Global';
-      if (!sourcesByRegion[region]) sourcesByRegion[region] = [];
-      if (!sourcesByRegion[region].includes(row.source)) sourcesByRegion[region].push(row.source);
-    });
-
-    res.json(sourcesByRegion);
-  } catch (error) {
-    sendError(res, error, 'Unable to load sources');
+  const now = Date.now();
+  if (sourcesCache.payload && sourcesCache.expiresAt > now) {
+    return res.json(sourcesCache.payload);
   }
-});
 
+  sourcesCache = {
+    expiresAt: now + SOURCES_CACHE_TTL_MS,
+    payload: DEFAULT_SOURCES_BY_REGION
+  };
+
+  res.json(DEFAULT_SOURCES_BY_REGION);
+});
 router.get('/source/:source', async (req, res) => {
   try {
     const { page, limit, offset } = getPagination(req.query);
@@ -262,11 +265,9 @@ router.get('/fetch', async (req, res) => {
 router.post('/manual', async (req, res) => {
   const body = req.body || {};
   const received = cleanText(body.secret);
-  const validSecrets = ['TRAVELTEW_2026', process.env.ADMIN_TOKEN]
-    .filter(Boolean)
-    .map((secret) => cleanText(secret));
+  const expectedSecret = cleanText(process.env.ADMIN_TOKEN || '');
 
-  if (!validSecrets.includes(received)) {
+  if (!expectedSecret || received !== expectedSecret) {
     return res.status(401).json({ error: 'Unauthorized', hint: 'Please enter the correct Admin Secret Key' });
   }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import axios from 'axios';
 import { API_URL } from '../config/api';
 import WireDashboard from '../components/WireDashboard';
@@ -16,7 +16,7 @@ const SourcePage = () => {
         const res = await axios.get(`${API_URL}/source/${encodeURIComponent(sourceName)}?limit=60`);
         setNews(res.data.articles || []);
       } catch (error) {
-        console.error('Error fetching source news:', error);
+        (import.meta.env.VITE_DEBUG_CLIENT === 'true') && console.warn('Error fetching source news:', error);
       } finally {
         setLoading(false);
       }
